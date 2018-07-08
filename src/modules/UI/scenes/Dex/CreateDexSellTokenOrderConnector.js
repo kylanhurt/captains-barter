@@ -3,7 +3,7 @@
 import { connect } from 'react-redux'
 
 import type { Dispatch, State } from '../../../ReduxTypes'
-import { DexSceneComponent } from './Dex.ui.js'
+import { CreateDexSellTokenOrderComponent } from './CreateDexSellTokenOrder.ui.js'
 
 export const mapStateToProps = (state: State) => {
 
@@ -13,4 +13,4 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 })
 
-export default connect()(DexSceneComponent)
+export default connect()(CreateDexSellTokenOrderComponent)

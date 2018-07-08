@@ -12,14 +12,14 @@ import SafeAreaView from '../../components/SafeAreaView'
 import styles from './style.js'
 
 export type Props = {
-
+  selectedWalletId: string
 }
 
 export type State = {
 
 }
 
-export class DexSceneComponent extends Component<Props, State> {
+export class CreateDexBuyTokenOrderComponent extends Component<Props, State> {
   render () {
     return (
       <SafeAreaView>
@@ -27,9 +27,31 @@ export class DexSceneComponent extends Component<Props, State> {
           <Gradient style={styles.gradient} />
           <ScrollView style={styles.container}>
             <View style={styles.instructionalArea}>
-              <Text style={styles.instructionalText}>Submit your order below</Text>
+              <Text style={styles.instructionalText}>{s.strings.dex_submit_order_instructions}</Text>
             </View>
             <View style={styles.formArea}>
+              <View style={[styles.textInputArea]}>
+                <FormField
+                  style={[styles.currencyName]}
+                  value={'howdy'}
+                  autoCapitalize='words'
+                  autoFocus
+                  label={'Enter info here:'}
+                  returnKeyType={'done'}
+                  autoCorrect={false}
+                />
+              </View>
+              <View style={[styles.textInputArea]}>
+                <FormField
+                  style={[styles.currencyName]}
+                  value={'howdy'}
+                  autoCapitalize='words'
+                  autoFocus
+                  label={'Enter info here:'}
+                  returnKeyType={'done'}
+                  autoCorrect={false}
+                />
+              </View>
               <View style={[styles.textInputArea]}>
                 <FormField
                   style={[styles.currencyName]}
@@ -44,9 +66,9 @@ export class DexSceneComponent extends Component<Props, State> {
             </View>
             <View style={[styles.buttonsArea]}>
               <PrimaryButton
-                text={s.strings.string_submit}
+                text={s.strings.string_next_capitalized}
                 style={styles.saveButton}
-                onPressFunction={this._onSubmit}
+                onPressFunction={this._onNext}
               />
             </View>
             <View style={styles.bottomPaddingForKeyboard} />
@@ -56,7 +78,7 @@ export class DexSceneComponent extends Component<Props, State> {
     )
   }
 
-  _onSubmit = () => {
+  _onNext = () => {
     console.log('submission executing')
   }
 }

@@ -248,6 +248,11 @@ const strings = {
   // DEX
   dex_title: 'DEX',
   dex_title_long: 'Decentralized Exchange',
+  dex_title_buy_sell: 'Buy or Sell',
+  dex_buy_tokens_button_title: 'Buy Tokens\nwith ETH',
+  dex_sell_tokens_button_title: 'Sell Tokens\nfor ETH',
+  dex_create_order_title: 'Create Order',
+  dex_submit_order_instructions: 'Submit your order below:',
   // OTP
   title_otp_enabled: '2FA is enabled',
   title_otp_disabled: 'Protect your account with 2FA',
