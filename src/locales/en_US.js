@@ -182,6 +182,7 @@ const strings = {
   string_split: 'Split',
   string_get_seed: 'Get Seed',
   string_save: 'Save',
+  string_submit: 'Submit',
   string_share: 'Share',
   string_show_balance: 'Show Balance',
   string_to_exchange_info: 'and deposit %1$s %2$s\n to %3$s',
@@ -243,6 +244,10 @@ const strings = {
   transaction_details_notes_title: 'Notes',
   string_search: 'Search',
   confirm_password_text: 'Confirm Password',
+
+  // DEX
+  dex_title: 'DEX',
+  dex_title_long: 'Decentralized Exchange',
   // OTP
   title_otp_enabled: '2FA is enabled',
   title_otp_disabled: 'Protect your account with 2FA',

@@ -28,6 +28,7 @@ const EXCHANGE_TEXT = s.strings.drawer_exchange
 const LOGOUT_TEXT = s.strings.settings_button_logout
 const SETTINGS_TEXT = s.strings.settings_title
 const PLUGIN_BUYSELL_TEXT = s.strings.title_plugin_buysell
+const DEX_TEXT = s.strings.dex_title
 
 export type Props = {
   logout: (username?: string) => void,
@@ -54,6 +55,7 @@ export default class Main extends Component<Props> {
           <RequestButton />
           <Separator />
           <ExchangeButton />
+          <DEXButton />
           <Separator />
         </View>
 
@@ -178,6 +180,24 @@ const ExchangeButton = () => {
         <Button.Center>
           <Button.Text>
             <Text>{EXCHANGE_TEXT}</Text>
+          </Button.Text>
+        </Button.Center>
+      </Button.Row>
+    </Button>
+  )
+}
+
+const DEXButton = () => {
+  return (
+    <Button onPress={Actions.dex}>
+      <Button.Row>
+        <Button.Left>
+          <Image source={exchangeIcon} style={styles.iconImage} />
+        </Button.Left>
+
+        <Button.Center>
+          <Button.Text>
+            <Text>{DEX_TEXT}</Text>
           </Button.Text>
         </Button.Center>
       </Button.Row>
