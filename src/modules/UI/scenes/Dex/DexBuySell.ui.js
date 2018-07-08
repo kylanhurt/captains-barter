@@ -11,7 +11,7 @@ import SafeAreaView from '../../components/SafeAreaView'
 import styles, { styles as rawStyle } from './style.js'
 
 export type Props = {
-  selectedWalletId: string
+
 }
 
 export type State = {

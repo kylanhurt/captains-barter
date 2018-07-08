@@ -40,16 +40,20 @@ export const styles = {
     backgroundColor: THEME.COLORS.TRANSPARENT,
     fontSize: 22
   },
-
   instructionalArea: {
     paddingVertical: 16,
     paddingHorizontal: 20
   },
   instructionalText: {
     fontSize: 16,
-    textAlign: 'center'
+    textAlign: 'center',
+    lineHeight: 28
   },
-
+  walletInfoText: {
+    fontSize: 16,
+    textAlign: 'center',
+    lineHeight: 24
+  },
   textInputArea: {
     height: 70
   },

@@ -253,6 +253,9 @@ const strings = {
   dex_sell_tokens_button_title: 'Sell Tokens\nfor ETH',
   dex_create_order_title: 'Create Order',
   dex_submit_order_instructions: 'Submit your order below:',
+  dex_create_order_wallet_title: 'Wallet:',
+  dex_create_order_balance_title: 'Balance:',
+  dex_create_order_address_title: 'Address:',
   // OTP
   title_otp_enabled: '2FA is enabled',
   title_otp_disabled: 'Protect your account with 2FA',

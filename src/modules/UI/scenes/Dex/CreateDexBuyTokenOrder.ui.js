@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { ScrollView, View } from 'react-native'
-
+import type { GuiWallet } from '../../../../types.js'
 import { FormField } from '../../../../components/FormField.js'
 import s from '../../../../locales/strings.js'
 import { PrimaryButton } from '../../components/Buttons'
@@ -12,7 +12,13 @@ import SafeAreaView from '../../components/SafeAreaView'
 import styles from './style.js'
 
 export type Props = {
-  selectedWalletId: string
+  selectedWalletId: string,
+  wallet: GuiWallet,
+  currencyCode: string,
+  walletName: string,
+  balance: null,
+  fiatCurrencyCode: string,
+  receiveAddress: string
 }
 
 export type State = {
@@ -28,6 +34,9 @@ export class CreateDexBuyTokenOrderComponent extends Component<Props, State> {
           <ScrollView style={styles.container}>
             <View style={styles.instructionalArea}>
               <Text style={styles.instructionalText}>{s.strings.dex_submit_order_instructions}</Text>
+              <Text style={styles.walletInfoText}>{s.strings.dex_create_order_wallet_title} {this.props.walletName} ({this.props.currencyCode})</Text>
+              <Text style={styles.walletInfoText}>{s.strings.dex_create_order_balance_title} {this.props.balance}</Text>
+              <Text numberOfLines={1} ellipsizeMode='middle' style={styles.walletInfoText}>{s.strings.dex_create_order_address_title} {this.props.receiveAddress}</Text>
             </View>
             <View style={styles.formArea}>
               <View style={[styles.textInputArea]}>
