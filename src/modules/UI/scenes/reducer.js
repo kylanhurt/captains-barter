@@ -13,6 +13,7 @@ import walletListModal from '../components/WalletListModal/reducer'
 import dimensions from '../dimensions/reducer'
 import * as SCENES_ACTION from './action.js'
 import changeMiningFee from './ChangeMiningFee/reducer'
+import { dex } from './Dex/reducer.js'
 import createWallet from './CreateWallet/reducer'
 import editToken from './EditToken/reducer'
 import request from './Request/reducer.js'
@@ -53,6 +54,7 @@ export const scenes = combineReducers({
   helpModal,
   transactionAlert,
   exchangeRate,
+  dex,
   ABAlert,
   currentScene,
   passwordReminderModal,

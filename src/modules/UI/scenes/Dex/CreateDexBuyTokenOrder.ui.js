@@ -18,7 +18,8 @@ export type Props = {
   walletName: string,
   balance: null,
   fiatCurrencyCode: string,
-  receiveAddress: string
+  receiveAddress: string,
+  getTokenList: () => void
 }
 
 export type State = {
@@ -26,6 +27,10 @@ export type State = {
 }
 
 export class CreateDexBuyTokenOrderComponent extends Component<Props, State> {
+  componentWillMount = () => {
+    this.props.getTokenList()
+  }
+
   render () {
     return (
       <SafeAreaView>

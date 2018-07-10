@@ -3,6 +3,7 @@
 import { connect } from 'react-redux'
 
 import type { Dispatch, State } from '../../../ReduxTypes'
+import { fetchTokenList } from './action.js'
 import { CreateDexBuyTokenOrderComponent } from './CreateDexBuyTokenOrder.ui.js'
 
 export const mapStateToProps = (state: State) => {
@@ -26,7 +27,7 @@ export const mapStateToProps = (state: State) => {
 }
 
 export const mapDispatchToProps = (dispatch: Dispatch) => ({
-
+  getTokenList: () => dispatch(fetchTokenList())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateDexBuyTokenOrderComponent)
