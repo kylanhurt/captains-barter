@@ -167,3 +167,9 @@ export type PasswordReminder = {
   nonPasswordDaysLimit: number,
   nonPasswordLoginsLimit: number
 }
+
+export type CryptoBalanceInfo = {
+  currencyCode: string,
+  formattedCryptoBalance: string,
+  symbol?: string
+}

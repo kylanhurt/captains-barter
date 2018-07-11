@@ -182,7 +182,7 @@ const strings = {
   string_split: 'Split',
   string_get_seed: 'Get Seed',
   string_save: 'Save',
-  string_submit: 'Submit',  
+  string_submit: 'Submit',
   string_share: 'Share',
   string_show_balance: 'Show Balance',
   string_to_exchange_info: 'and deposit %1$s %2$s\n to %3$s',

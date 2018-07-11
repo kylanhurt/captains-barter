@@ -146,6 +146,9 @@ export type State = {
         displayAlert: boolean,
         edgeTransaction: EdgeTransaction
       },
+      dex: {
+        tokenDirectory: Array<string>
+      },
       exchangeRate: {
         exchangeRates: {}
       },

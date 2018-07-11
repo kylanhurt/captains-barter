@@ -491,7 +491,7 @@ export default class Main extends Component<Props, State> {
                           renderTitle={this.renderTitle(CREATE_DEX_ORDER)}
                           renderLeftButton={this.renderBackButton()}
                         />
-                      </Stack>                      
+                      </Stack>
                     </Tabs>
 
                     <Stack key={Constants.SEND_CONFIRMATION} hideTabBar>

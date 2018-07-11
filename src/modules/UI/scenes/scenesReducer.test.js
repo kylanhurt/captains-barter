@@ -135,6 +135,9 @@ test('initialState', () => {
       walletListModalVisible: false,
       walletTransferList: []
     },
+    dex: {
+      tokenDirectory: []
+    },
     currentScene: '',
     passwordReminderModal: {
       status: null

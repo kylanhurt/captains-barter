@@ -1,8 +1,9 @@
 // @flow
 
+import type { GetState, Dispatch } from '../../../ReduxTypes.js'
 export const UPDATE_TOKEN_LIST = 'UPDATE_TOKEN_LIST'
 
-export const fetchTokenList = () => (dispatch, getState) => {
+export const fetchTokenList = () => (dispatch: Dispatch, getState: GetState) => {
   fetch('https://raw.githubusercontent.com/kvhnuke/etherwallet/mercury/app/scripts/tokens/ethTokens.json')
     .then((response) => {
       const tokenList = JSON.parse(response._bodyText)
@@ -14,7 +15,7 @@ export const fetchTokenList = () => (dispatch, getState) => {
     })
 }
 
-export function updateTokenList (tokenDirectory) {
+export function updateTokenList (tokenDirectory: Array<Object>) {
   return {
     type: UPDATE_TOKEN_LIST,
     data: tokenDirectory

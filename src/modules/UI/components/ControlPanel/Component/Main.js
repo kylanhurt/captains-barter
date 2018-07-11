@@ -57,7 +57,7 @@ export default class Main extends Component<Props> {
           <ExchangeButton />
           <Separator />
           <DEXButton />
-          <Separator />          
+          <Separator />
         </View>
 
         <View>

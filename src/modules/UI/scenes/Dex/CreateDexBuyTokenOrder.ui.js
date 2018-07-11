@@ -19,7 +19,10 @@ export type Props = {
   balance: null,
   fiatCurrencyCode: string,
   receiveAddress: string,
-  getTokenList: () => void
+  getTokenList: () => void,
+  symbol: string,
+  fiatSymbol: string,
+  fiatBalance: string
 }
 
 export type State = {
