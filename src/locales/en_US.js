@@ -182,6 +182,7 @@ const strings = {
   string_split: 'Split',
   string_get_seed: 'Get Seed',
   string_save: 'Save',
+  string_submit: 'Submit',  
   string_share: 'Share',
   string_show_balance: 'Show Balance',
   string_to_exchange_info: 'and deposit %1$s %2$s\n to %3$s',
@@ -295,8 +296,20 @@ const strings = {
   password_check_skip_formatted:
     'Please create a new account and transfer your funds if you forgot your password. Your password CANNOT BE RECOVERED by %1$s and you will lose access to your funds without your password.',
   password_check_skip: 'Please create a new account and transfer your funds if you forgot your password.',
-
   password: 'Password',
+
+  // DEX
+  dex_title: 'DEX',
+  dex_title_long: 'Decentralized Exchange',
+  dex_title_buy_sell: 'Buy or Sell',
+  dex_buy_tokens_button_title: 'Buy Tokens\nwith ETH',
+  dex_sell_tokens_button_title: 'Sell Tokens\nfor ETH',
+  dex_create_order_title: 'Create Order',
+  dex_submit_order_instructions: 'Submit your order below:',
+  dex_create_order_wallet_title: 'Wallet:',
+  dex_create_order_balance_title: 'Balance:',
+  dex_create_order_address_title: 'Address:',
+
   // export scene
   string_export_qbo: 'Export Quickbooks QBO',
   string_export_qbo_abbrev: 'Email QBO',

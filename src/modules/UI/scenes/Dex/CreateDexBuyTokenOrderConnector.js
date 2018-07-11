@@ -1,0 +1,45 @@
+// @flow
+
+import { connect } from 'react-redux'
+
+import type { Dispatch, State } from '../../../ReduxTypes'
+import { fetchTokenList } from './action.js'
+import { CreateDexBuyTokenOrderComponent } from './CreateDexBuyTokenOrder.ui.js'
+import {
+  getCurrencyAccountFiatBalanceFromWallet,
+  getCryptoBalanceInfoFromWallet,
+  getFiatSymbol
+} from '../../../utils.js'
+
+export const mapStateToProps = (state: State) => {
+  const selectedWalletId = state.ui.wallets.selectedWalletId
+  const wallet = state.ui.wallets.byId[selectedWalletId]
+  const currencyCode = wallet.currencyCode
+  const walletName = wallet.name
+  const balanceInfo = getCryptoBalanceInfoFromWallet(wallet, currencyCode, state)
+  const balance = balanceInfo.formattedCryptoBalance
+  const symbol = balanceInfo.symbol
+  // const fiatCurrencyCode = wallet.fiatCurrencyCode
+  const receiveAddress = wallet.receiveAddress.publicAddress
+  const fiatBalance = getCurrencyAccountFiatBalanceFromWallet(wallet, currencyCode, state)
+  const settings = state.ui.settings
+  const fiatSymbol = settings.defaultFiat ? getFiatSymbol(settings.defaultFiat) : ''
+  return {
+    selectedWalletId,
+    wallet,
+    currencyCode,
+    walletName,
+    balance,
+    symbol,
+    // fiatCurrencyCode,
+    receiveAddress,
+    fiatBalance,
+    fiatSymbol
+  }
+}
+
+export const mapDispatchToProps = (dispatch: Dispatch) => ({
+  getTokenList: () => dispatch(fetchTokenList())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateDexBuyTokenOrderComponent)

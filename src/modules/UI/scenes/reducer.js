@@ -7,6 +7,7 @@ import type { Action } from '../../ReduxTypes.js'
 import ABAlert from '../components/ABAlert/reducer'
 import controlPanel from '../components/ControlPanel/reducer.js'
 import exchangeRate from '../components/ExchangeRate/reducer.js'
+import { dex } from './Dex/reducer.js'
 import { helpModal } from '../components/HelpModal/reducer.js'
 import transactionAlert from '../components/TransactionAlert/reducer.js'
 import walletListModal from '../components/WalletListModal/reducer'
@@ -41,6 +42,7 @@ export const scenes = combineReducers({
   changeMiningFee,
   transactionList,
   transactionDetails,
+  dex,
   controlPanel,
   walletList,
   walletTransferList,
