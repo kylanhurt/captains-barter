@@ -34,10 +34,17 @@ export class CreateDexSelectTokenComponent extends Component<CreateDexSelectToke
     }
   }
 
+  onChangeSearchInput = (input: string) => {
+    this.setState({
+      searchTerm: input
+    })
+  }
+
   render () {
-    const { tokenDirectory } = this.props
+    const { searchTerm } = this.state
     // const keyboardHeight = this.props.dimensions.keyboardHeight || 0
     // const searchResultsHeight = stylesRaw.usableHeight - keyboardHeight - 58 // substract button area height and FormField height
+    const filteredTokenDirectory = this.props.tokenDirectory.filter(token => (token.symbol.indexOf(searchTerm) >= 0))
     return (
       <SafeAreaView>
         <View style={styles.scene}>
@@ -51,7 +58,7 @@ export class CreateDexSelectTokenComponent extends Component<CreateDexSelectToke
               // onBlur={this.handleOnBlur}
               autoCorrect={false}
               autoCapitalize={'none'}
-              // onChangeText={this.handleSearchTermChange}
+              onChangeText={this.onChangeSearchInput}
               value={this.state.searchTerm}
               label={'Choose a token:'}
               returnKeyType={'search'}
@@ -59,7 +66,7 @@ export class CreateDexSelectTokenComponent extends Component<CreateDexSelectToke
             <SearchResults
               renderRegularResultFxn={this.renderTokenTypeResult}
               onRegularSelectFxn={this.props._onSelectToken}
-              regularArray={tokenDirectory}
+              regularArray={filteredTokenDirectory}
               containerStyle={[styles.searchContainer]}
             />
           </View>

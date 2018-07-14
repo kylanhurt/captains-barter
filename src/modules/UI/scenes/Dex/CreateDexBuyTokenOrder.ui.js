@@ -5,6 +5,7 @@ import { Actions } from 'react-native-router-flux'
 import { ScrollView, View } from 'react-native'
 import type { GuiWallet } from '../../../../types.js'
 import { FormField } from '../../../../components/FormField.js'
+import { TertiaryButton } from '../../components/Modals/components/TertiaryButton.ui.js'
 import { CREATE_DEX_SELECT_TOKEN } from '../../../../constants/SceneKeys.js'
 import s from '../../../../locales/strings.js'
 import { PrimaryButton } from '../../components/Buttons'
@@ -58,6 +59,13 @@ export class CreateDexBuyTokenOrderComponent extends Component<Props, State> {
     })
   }
 
+  _onPressTokenCodeButton = () => {
+    Actions[CREATE_DEX_SELECT_TOKEN]({
+      tokenCode: this.state.tokenCode,
+      _onSelectToken: this._onSelectToken
+    })
+  }
+
   render () {
     return (
       <SafeAreaView>
@@ -72,15 +80,9 @@ export class CreateDexBuyTokenOrderComponent extends Component<Props, State> {
             </View>
             <View style={styles.formArea}>
               <View style={[styles.textInputArea]}>
-                <FormField
-                  style={[styles.currencyName]}
-                  value={this.state.tokenCode}
-                  autoCapitalize='words'
-                  label={'Token to Purchase'}
-                  returnKeyType={'done'}
-                  autoCorrect={false}
-                  onFocus={this._onEnterTokenCodeTextField}
-                />
+                <TertiaryButton onPress={this._onPressTokenCodeButton}>
+                  <TertiaryButton.Text>{this.state.tokenCode || 'Find Token Code'}</TertiaryButton.Text>
+                </TertiaryButton>
               </View>
               <View style={[styles.textInputArea]}>
                 <FormField
