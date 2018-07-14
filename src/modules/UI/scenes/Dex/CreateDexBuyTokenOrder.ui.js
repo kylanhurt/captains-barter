@@ -1,9 +1,11 @@
 // @flow
 
 import React, { Component } from 'react'
+import { Actions } from 'react-native-router-flux'
 import { ScrollView, View } from 'react-native'
 import type { GuiWallet } from '../../../../types.js'
 import { FormField } from '../../../../components/FormField.js'
+import { CREATE_DEX_SELECT_TOKEN } from '../../../../constants/SceneKeys.js'
 import s from '../../../../locales/strings.js'
 import { PrimaryButton } from '../../components/Buttons'
 import Text from '../../components/FormattedText'
@@ -26,18 +28,40 @@ export type Props = {
 }
 
 export type State = {
-
+  tokenCode: string
 }
 
 export class CreateDexBuyTokenOrderComponent extends Component<Props, State> {
+  constructor (props: Props) {
+    super(props)
+    this.state = {
+      tokenCode: ''
+    }
+  }
   componentWillMount = () => {
     this.props.getTokenList()
+  }
+
+  _onEnterTokenCodeTextField = () => {
+    Actions[CREATE_DEX_SELECT_TOKEN]({
+      tokenCode: this.state.tokenCode,
+      _onSelectToken: this._onSelectToken
+    })
+  }
+
+  _onSelectToken = (currencyCode: string) => {
+    this.setState({
+      tokenCode: currencyCode
+    }, () => {
+      Actions.pop()
+      // this.destinationQuantity.focus()
+    })
   }
 
   render () {
     return (
       <SafeAreaView>
-        <View style={[styles.dexScene]}>
+        <View style={[styles.scene]}>
           <Gradient style={styles.gradient} />
           <ScrollView style={styles.container}>
             <View style={styles.instructionalArea}>
@@ -50,12 +74,12 @@ export class CreateDexBuyTokenOrderComponent extends Component<Props, State> {
               <View style={[styles.textInputArea]}>
                 <FormField
                   style={[styles.currencyName]}
-                  value={'howdy'}
+                  value={this.state.tokenCode}
                   autoCapitalize='words'
-                  autoFocus
-                  label={'Enter info here:'}
+                  label={'Token to Purchase'}
                   returnKeyType={'done'}
                   autoCorrect={false}
+                  onFocus={this._onEnterTokenCodeTextField}
                 />
               </View>
               <View style={[styles.textInputArea]}>
@@ -67,6 +91,7 @@ export class CreateDexBuyTokenOrderComponent extends Component<Props, State> {
                   label={'Enter info here:'}
                   returnKeyType={'done'}
                   autoCorrect={false}
+                  // ref={ ref => { this.destinationQuantity = ref }}
                 />
               </View>
               <View style={[styles.textInputArea]}>

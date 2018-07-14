@@ -6,8 +6,21 @@ import THEME from '../../../../theme/variables/airbitz'
 import { PLATFORM } from '../../../../theme/variables/platform'
 
 export const styles = {
+  usableHeight: PLATFORM.usableHeight,
+  scene: {
+    flex: 1,
+    backgroundColor: THEME.COLORS.WHITE
+  },
   gradient: {
-    height: THEME.HEADER
+    height: THEME.HEADER,
+    width: '100%',
+    position: 'absolute'
+  },
+  view: {
+    position: 'relative',
+    top: THEME.HEADER,
+    paddingHorizontal: 20,
+    paddingVertical: 5
   },
   container: {
     position: 'relative',
@@ -101,6 +114,50 @@ export const styles = {
   },
   bottomPaddingForKeyboard: {
     height: 300
+  },
+  picker: {
+    fontFamily: THEME.FONTS.DEFAULT,
+    height: 50,
+    padding: 5
+  },
+  singleTokenTypeWrap: {
+    flexDirection: 'column',
+    flex: 1
+  },
+  singleTokenType: {
+    height: 60,
+    borderBottomWidth: 1,
+    borderBottomColor: THEME.COLORS.GRAY_3,
+    paddingVertical: 10,
+    paddingHorizontal: 15
+  },
+  tokenTypeInfoWrap: {
+    flexDirection: 'row',
+    height: 40,
+    flex: 1,
+    justifyContent: 'space-between'
+  },
+  tokenTypeLeft: {
+    flexDirection: 'row'
+  },
+  tokenTypeLeftTextWrap: {
+    justifyContent: 'center'
+  },
+  cryptoTypeName: {
+    fontSize: 16,
+    color: THEME.COLORS.GRAY_1,
+    textAlignVertical: 'center'
+  },
+  searchContainer: {
+    position: 'relative',
+    backgroundColor: THEME.COLORS.TRANSPARENT,
+    borderBottomWidth: 1,
+    borderBottomColor: THEME.COLORS.GRAY_3,
+    width: '100%'
+  },
+  underlayColor: {
+    color: THEME.COLORS.GRAY_4
   }
 }
+
 export default StyleSheet.create(styles)

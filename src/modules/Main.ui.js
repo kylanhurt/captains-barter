@@ -44,6 +44,7 @@ import ExchangeConnector from '../connectors/scene/CryptoExchangeSceneConnector'
 import DexBuySellConnector from './UI/scenes/Dex/DexBuySellConnector.js'
 import CreateDexBuyTokenOrderConnector from './UI/scenes/Dex/CreateDexBuyTokenOrderConnector.js'
 import CreateDexSellTokenOrderConnector from './UI/scenes/Dex/CreateDexSellTokenOrderConnector.js'
+import { CreateDexSelectTokenConnector } from './UI/scenes/Dex/CreateDexSelectTokenConnector.js'
 import TransactionsExportSceneConnector from '../connectors/scene/TransactionsExportSceneConnector'
 import EdgeLoginSceneConnector from '../connectors/scene/EdgeLoginSceneConnector'
 import OtpSettingsSceneConnector from '../connectors/scene/OtpSettingsSceneConnector.js'
@@ -148,6 +149,7 @@ const EDGE_LOGIN = s.strings.title_edge_login
 const EXCHANGE = s.strings.title_exchange
 const DEX_BUY_SELL = s.strings.dex_title_buy_sell
 const CREATE_DEX_ORDER = s.strings.dex_create_order_title
+const CREATE_DEX_SELECT_TOKEN = s.strings.dex_select_token_title
 const CHANGE_MINING_FEE = s.strings.title_change_mining_fee
 const BACK = s.strings.title_back
 const MANAGE_TOKENS = s.strings.title_manage_tokens
@@ -472,21 +474,28 @@ export default class Main extends Component<Props, State> {
                       <Stack key={Constants.DEX}>
                         <Scene
                           key={Constants.DEX_BUY_SELL}
-                          navTransparent={true}
+                          navTransparent={false}
                           component={DexBuySellConnector}
                           renderTitle={this.renderTitle(DEX_BUY_SELL)}
                           renderLeftButton={this.renderBackButton()}
                         />
                         <Scene
                           key={Constants.CREATE_DEX_BUY_TOKEN_ORDER}
-                          navTransparent={true}
+                          navTransparent={false}
                           component={CreateDexBuyTokenOrderConnector}
                           renderTitle={this.renderTitle(CREATE_DEX_ORDER)}
                           renderLeftButton={this.renderBackButton()}
                         />
                         <Scene
+                          key={Constants.CREATE_DEX_SELECT_TOKEN}
+                          navTransparent={false}
+                          component={CreateDexSelectTokenConnector}
+                          renderTitle={this.renderTitle(CREATE_DEX_SELECT_TOKEN)}
+                          renderLeftButton={this.renderBackButton()}
+                        />
+                        <Scene
                           key={Constants.CREATE_DEX_SELL_TOKEN_ORDER}
-                          navTransparent={true}
+                          navTransparent={false}
                           component={CreateDexSellTokenOrderConnector}
                           renderTitle={this.renderTitle(CREATE_DEX_ORDER)}
                           renderLeftButton={this.renderBackButton()}

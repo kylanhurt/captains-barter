@@ -13,6 +13,7 @@ export const DEX = 'dex'
 export const DEX_BUY_SELL = 'dexBuySell'
 export const CREATE_DEX_BUY_TOKEN_ORDER = 'createDexBuyTokenOrder'
 export const CREATE_DEX_SELL_TOKEN_ORDER = 'createDexSellTokenOrder'
+export const CREATE_DEX_SELECT_TOKEN = 'createDexSelectToken'
 export const EDGE_LOGIN = 'edgeLogin'
 export const WALLET_LIST = 'walletList'
 export const WALLET_LIST_SCENE = 'walletListScene' // distinguished as actual scene vs. stack

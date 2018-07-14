@@ -305,6 +305,7 @@ const strings = {
   dex_buy_tokens_button_title: 'Buy Tokens\nwith ETH',
   dex_sell_tokens_button_title: 'Sell Tokens\nfor ETH',
   dex_create_order_title: 'Create Order',
+  dex_select_token_title: 'Select Token',
   dex_submit_order_instructions: 'Submit your order below:',
   dex_create_order_wallet_title: 'Wallet:',
   dex_create_order_balance_title: 'Balance:',

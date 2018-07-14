@@ -173,3 +173,17 @@ export type CryptoBalanceInfo = {
   formattedCryptoBalance: string,
   symbol?: string
 }
+
+export type DirectoryTokenInfo = {
+  address: string,
+  symbol: string,
+  decimal: number,
+  type: string,
+  key?: number
+}
+
+export type TokenDirectorySearchResult = {
+  index: number,
+  item: DirectoryTokenInfo,
+  separators?: any
+}

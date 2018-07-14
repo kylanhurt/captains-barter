@@ -14,7 +14,7 @@ import type { Dispatch as ReduxDispatch, Store as ReduxStore } from 'redux'
 
 import type { ContactsState } from '../reducers/contacts/contactsReducer.js'
 import type { PermissionsState } from '../reducers/permissions/permissionsReducer.js'
-import type { DeviceDimensions, GuiContact, GuiCurrencyInfo, GuiWallet, TransactionListTx } from '../types'
+import type { DeviceDimensions, GuiContact, GuiCurrencyInfo, GuiWallet, TransactionListTx, DirectoryTokenInfo } from '../types'
 import type { Permission, PermissionStatus } from './UI/permissions.js'
 import type { RequestState } from './UI/Request/reducer.js'
 import type { RequestSceneState } from './UI/scenes/Request/reducer.js'
@@ -147,7 +147,7 @@ export type State = {
         edgeTransaction: EdgeTransaction
       },
       dex: {
-        tokenDirectory: Array<string>
+        tokenDirectory: Array<DirectoryTokenInfo>
       },
       exchangeRate: {
         exchangeRates: {}
