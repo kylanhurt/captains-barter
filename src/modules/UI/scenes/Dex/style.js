@@ -148,6 +148,7 @@ export const styles = {
     color: THEME.COLORS.GRAY_1,
     textAlignVertical: 'center'
   },
+
   searchContainer: {
     position: 'relative',
     backgroundColor: THEME.COLORS.TRANSPARENT,
@@ -157,6 +158,12 @@ export const styles = {
   },
   underlayColor: {
     color: THEME.COLORS.GRAY_4
+  },
+  tokenAmountInput: {
+
+  },
+  ethAmountInput: {
+
   }
 }
 

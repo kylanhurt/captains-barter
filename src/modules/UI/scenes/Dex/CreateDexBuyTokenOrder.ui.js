@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import { Actions } from 'react-native-router-flux'
 import { ScrollView, View } from 'react-native'
 import type { GuiWallet } from '../../../../types.js'
+import { intl } from '../../../../locales/intl'
 import { FormField } from '../../../../components/FormField.js'
 import { TertiaryButton } from '../../components/Modals/components/TertiaryButton.ui.js'
 import { CREATE_DEX_SELECT_TOKEN } from '../../../../constants/SceneKeys.js'
@@ -29,14 +30,18 @@ export type Props = {
 }
 
 export type State = {
-  tokenCode: string
+  tokenCode: string,
+  tokenAmount: string,
+  ethAmount: string
 }
 
 export class CreateDexBuyTokenOrderComponent extends Component<Props, State> {
   constructor (props: Props) {
     super(props)
     this.state = {
-      tokenCode: ''
+      tokenCode: '',
+      tokenAmount: '0',
+      ethAmount: '0'
     }
   }
   componentWillMount = () => {
@@ -66,6 +71,28 @@ export class CreateDexBuyTokenOrderComponent extends Component<Props, State> {
     })
   }
 
+  _onChangeTokenAmountInput = (input: string) => {
+    console.log('input is: ', input)
+    if (!intl.isValidInput(input)) {
+      return
+    }
+    const formattedTokenAmountInput = intl.formatToNativeNumber(intl.prettifyNumber(input))
+    this.setState({
+      tokenAmount: formattedTokenAmountInput
+    })
+  }
+
+  _onChangeEthAmountInput = (input: string) => {
+    console.log('input is: ', input)
+    if (!intl.isValidInput(input)) {
+      return
+    }
+    const formattedEthAmountInput = intl.formatToNativeNumber(intl.prettifyNumber(input))
+    this.setState({
+      ethAmount: formattedEthAmountInput
+    })
+  }
+
   render () {
     return (
       <SafeAreaView>
@@ -86,25 +113,22 @@ export class CreateDexBuyTokenOrderComponent extends Component<Props, State> {
               </View>
               <View style={[styles.textInputArea]}>
                 <FormField
-                  style={[styles.currencyName]}
-                  value={'howdy'}
-                  autoCapitalize='words'
-                  autoFocus
-                  label={'Enter info here:'}
-                  returnKeyType={'done'}
-                  autoCorrect={false}
-                  // ref={ ref => { this.destinationQuantity = ref }}
+                  style={[styles.tokenAmountInput]}
+                  value={this.state.tokenAmount}
+                  keyboardType={'decimal-pad'}
+                  label={'Enter token amount here:'}
+                  returnKeyType={'next'}
+                  onChangeText={this._onChangeTokenAmountInput}
                 />
               </View>
               <View style={[styles.textInputArea]}>
                 <FormField
-                  style={[styles.currencyName]}
-                  value={'howdy'}
-                  autoCapitalize='words'
-                  autoFocus
-                  label={'Enter info here:'}
+                  style={[styles.ethAmountInput]}
+                  value={this.state.ethAmount}
+                  label={'Enter ETH amount here:'}
                   returnKeyType={'done'}
-                  autoCorrect={false}
+                  keyboardType={'decimal-pad'}
+                  onChangeText={this._onChangeEthAmountInput}
                 />
               </View>
             </View>
