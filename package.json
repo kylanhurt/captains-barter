@@ -25,12 +25,12 @@
     "android:release": "cd android && ./gradlew assembleRelease; cd ../",
     "android:release-install": "npm run android:clean && npm run android:release && cd android/app/build/outputs/apk && adb install app-release.apk; cd ../",
     "android:run": "npm run android:clean; react-native run-android",
-    "precommit": "npm test",
     "cover": "jest --coverage",
     "flow": "flow",
     "flow:0": "flow; exit 0",
     "flow-coverage": "flow-coverage-report",
     "format": "import-sort -l --write '*.js' 'src/**/*.js'; prettier-eslint --write '*.js' 'src/**/*.js'",
+    "precommit": "npm run test",
     "postinstall": "sh ./postinstall.sh",
     "ios:run": "react-native run-ios",
     "jest": "jest",
@@ -71,6 +71,9 @@
     "zlib": "browserify-zlib"
   },
   "dependencies": {
+    "0x.js": "0.36.3",
+    "@0xproject/subproviders": "^1.0.4",
+    "@0xproject/utils": "^0.5.2",
     "async-lock": "^1.1.2",
     "biggystring": "^3.0.2",
     "browserify-zlib": "^0.1.4",
@@ -149,6 +152,7 @@
     "tty-browserify": "0.0.0",
     "url": "^0.10.3",
     "vm-browserify": "0.0.4",
+    "web3": "^0.20.0",
     "why-did-you-update": "^0.1.1",
     "yarn": "^1.3.2"
   },
@@ -204,7 +208,10 @@
     "transformIgnorePatterns": [
       "node_modules/mobx-react"
     ],
-    "testPathIgnorePatterns": ["node_modules", "<rootDir>/e2e"],
+    "testPathIgnorePatterns": [
+      "node_modules",
+      "<rootDir>/e2e"
+    ],
     "setupFiles": [
       "./testSetup.js"
     ]

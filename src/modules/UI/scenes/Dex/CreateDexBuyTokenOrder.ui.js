@@ -15,7 +15,7 @@ import Gradient from '../../components/Gradient/Gradient.ui'
 import SafeAreaView from '../../components/SafeAreaView'
 import styles from './style.js'
 
-export type Props = {
+export type CreateDexBuyTokenOrderOwnProps = {
   selectedWalletId: string,
   wallet: GuiWallet,
   currencyCode: string,
@@ -23,20 +23,26 @@ export type Props = {
   balance: null,
   fiatCurrencyCode: string,
   receiveAddress: string,
-  getTokenList: () => void,
   symbol: string,
   fiatSymbol: string,
   fiatBalance: string
 }
 
-export type State = {
+export type CreateDexBuyTokenOrderDispatchProps = {
+  getTokenList: () => void,
+  submitDexBuyTokenOrder: () => void,
+}
+
+export type CreateDexBuyTokenOrderProps = CreateDexBuyTokenOrderOwnProps & CreateDexBuyTokenOrderDispatchProps
+
+export type CreateDexBuyTokenOrderState = {
   tokenCode: string,
   tokenAmount: string,
   ethAmount: string
 }
 
-export class CreateDexBuyTokenOrderComponent extends Component<Props, State> {
-  constructor (props: Props) {
+export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyTokenOrderProps, CreateDexBuyTokenOrderState> {
+  constructor (props: CreateDexBuyTokenOrderProps) {
     super(props)
     this.state = {
       tokenCode: '',
@@ -134,9 +140,9 @@ export class CreateDexBuyTokenOrderComponent extends Component<Props, State> {
             </View>
             <View style={[styles.buttonsArea]}>
               <PrimaryButton
-                text={s.strings.string_next_capitalized}
-                style={styles.saveButton}
-                onPressFunction={this._onNext}
+                text={s.strings.dex_submit_order_button_title}
+                style={styles.submitButton}
+                onPressFunction={this._onSubmit}
               />
             </View>
             <View style={styles.bottomPaddingForKeyboard} />
@@ -146,7 +152,9 @@ export class CreateDexBuyTokenOrderComponent extends Component<Props, State> {
     )
   }
 
-  _onNext = () => {
+  _onSubmit = () => {
+    const { tokenCode, tokenAmount, ethAmount } = this.state
     console.log('submission executing')
+    this.props.submitDexBuyTokenOrder(tokenCode, tokenAmount, ethAmount)
   }
 }

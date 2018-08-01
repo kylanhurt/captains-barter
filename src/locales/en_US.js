@@ -307,6 +307,7 @@ const strings = {
   dex_create_order_title: 'Create Order',
   dex_select_token_title: 'Select Token',
   dex_submit_order_instructions: 'Submit your order below:',
+  dex_submit_order_button_title: 'Submit Order',
   dex_create_order_wallet_title: 'Wallet:',
   dex_create_order_balance_title: 'Balance:',
   dex_create_order_address_title: 'Address:',

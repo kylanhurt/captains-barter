@@ -44,7 +44,7 @@ export class CreateDexSelectTokenComponent extends Component<CreateDexSelectToke
     const { searchTerm } = this.state
     // const keyboardHeight = this.props.dimensions.keyboardHeight || 0
     // const searchResultsHeight = stylesRaw.usableHeight - keyboardHeight - 58 // substract button area height and FormField height
-    const filteredTokenDirectory = this.props.tokenDirectory.filter(token => (token.symbol.indexOf(searchTerm) >= 0))
+    const filteredTokenDirectory = this.props.tokenDirectory.filter(token => (token.symbol.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0))
     return (
       <SafeAreaView>
         <View style={styles.scene}>
