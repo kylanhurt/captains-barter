@@ -43,6 +43,7 @@ import RequestDropMenu from '../connectors/components/HeaderMenuRequestConnector
 import ExchangeConnector from '../connectors/scene/CryptoExchangeSceneConnector'
 import DexBuySellConnector from './UI/scenes/Dex/DexBuySellConnector.js'
 import CreateDexBuyTokenOrderConnector from './UI/scenes/Dex/CreateDexBuyTokenOrderConnector.js'
+import BrowseDexOrderBookConnector from './UI/scenes/Dex/BrowseDexOrderBookConnector.js'
 import CreateDexSellTokenOrderConnector from './UI/scenes/Dex/CreateDexSellTokenOrderConnector.js'
 import { CreateDexSelectTokenConnector } from './UI/scenes/Dex/CreateDexSelectTokenConnector.js'
 import TransactionsExportSceneConnector from '../connectors/scene/TransactionsExportSceneConnector'
@@ -149,6 +150,7 @@ const EDGE_LOGIN = s.strings.title_edge_login
 const EXCHANGE = s.strings.title_exchange
 const DEX_BUY_SELL = s.strings.dex_title_buy_sell
 const CREATE_DEX_ORDER = s.strings.dex_create_order_title
+const BROWSE_DEX_ORDER_BOOK = s.strings.dex_browse_order_book_title
 const CREATE_DEX_SELECT_TOKEN = s.strings.dex_select_token_title
 const CHANGE_MINING_FEE = s.strings.title_change_mining_fee
 const BACK = s.strings.title_back
@@ -484,6 +486,13 @@ export default class Main extends Component<Props, State> {
                           navTransparent={false}
                           component={CreateDexBuyTokenOrderConnector}
                           renderTitle={this.renderTitle(CREATE_DEX_ORDER)}
+                          renderLeftButton={this.renderBackButton()}
+                        />
+                        <Scene
+                          key={Constants.BROWSE_DEX_ORDER_BOOK}
+                          navTransparent={false}
+                          component={BrowseDexOrderBookConnector}
+                          renderTitle={this.renderTitle(BROWSE_DEX_ORDER_BOOK)}
                           renderLeftButton={this.renderBackButton()}
                         />
                         <Scene

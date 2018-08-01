@@ -103,6 +103,14 @@ export const styles = {
   buyButtonText: {
     color: THEME.COLORS.WHITE
   },
+  browseButtonText: {
+    color: THEME.COLORS.WHITE
+  },
+  browseOrderBookButton: {
+    flex: 1,
+    borderRadius: 12,
+    paddingHorizontal: 48
+  },
   sellButton: {
     flex: 1,
     backgroundColor: THEME.COLORS.WHITE,
