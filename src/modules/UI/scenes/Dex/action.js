@@ -1,10 +1,12 @@
 // @flow
 
 import type { GetState, Dispatch } from '../../../ReduxTypes.js'
+import { Alert } from 'react-native'
 import { DecodedLogEvent, ZeroEx } from '0x.js'
 import { BigNumber } from '@0xproject/utils'
 import { Web3Wrapper } from '@0xproject/web3-wrapper'
 import { Web3ProviderEngine, RPCSubprovider, PrivateKeyWalletSubprovider } from '@0xproject/subproviders'
+import { HttpClient } from '@0xproject/connect'
 import { getSelectedWallet } from '../../../UI/selectors.js'
 import * as Web3 from 'web3'
 
@@ -24,12 +26,12 @@ const configs = {
 const DECIMALS = 18
 
 export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, ethAmount: string) => async (dispatch: Dispatch, getState: GetState) => {
+  //dispatch(isCreateDexBuyTokenOrderProcessing(true))  
   const state = getState()
   const tokenDirectory = state.ui.scenes.dex.tokenDirectory
   const selectedWallet = getSelectedWallet(state)
   const selectedWalletId = selectedWallet.id
   const ethereumKey = state.core.wallets.byId[selectedWalletId].keys.ethereumKey
-
   // port over our Edge wallet private key to Web3...
   // start a new provider engine
   const engine = new Web3ProviderEngine()
@@ -70,7 +72,7 @@ export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, e
   // await zeroEx.awaitTransactionMinedAsync(setTakerAllowTxHash)
 
   // Generate order
-  const order = {
+  const feesRequest = {
     maker: makerAddress, // Ethereum address of our Maker.
     taker: ZeroEx.NULL_ADDRESS, // Ethereum address of our Taker.
     feeRecipient: relayerAddress, // Ethereum address of our Relayer (none for now).
@@ -85,17 +87,39 @@ export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, e
     expirationUnixTimestampSec: new BigNumber(Date.now() + 3600000), // When will the order expire (in unix time), Valid for up to an hour
   }
 
+    // Submit order to relayer
+    const relayerApiUrl = 'http://localhost:3000/v0'
+    const relayerClient = new HttpClient(relayerApiUrl)
+    console.log('Relayer client set')
+
+    // Send fees request to relayer and receive a FeesResponse instance
+    const feesResponse: FeesResponse = await relayerClient.getFeesAsync(feesRequest)
+    console.log('feesResponse is: ', feesResponse)
+    const order: Order = {
+      ...feesRequest,
+      ...feesResponse,
+    }
     // Create orderHash
     const orderHash = ZeroEx.getOrderHashHex(order)
+    // Signing orderHash -> ecSignature
+    const shouldAddPersonalMessagePrefix = false
+    const ecSignature = await zeroEx.signOrderHashAsync(orderHash, makerAddress, shouldAddPersonalMessagePrefix)
+    const signedOrder = {
+      ...order,
+      ecSignature,
+    }
+    await relayerClient.submitOrderAsync(signedOrder)
     console.log('orderHash is: ', orderHash)
 
-  // Signing orderHash -> ecSignature
-  const shouldAddPersonalMessagePrefix = false
-  const ecSignature = await zeroEx.signOrderHashAsync(orderHash, makerAddress, shouldAddPersonalMessagePrefix)
-  const signedOrder = {
-    ...order,
-    ecSignature,
-  }
+    Alert.alert('Order Submitted', 'Your order has been submitted')
+    //dispatch(isCreateDexBuyTokenOrderProcessing(false))  
+
+    // Send orderbook request to relayer and receive an OrderbookResponse instance
+    const orderbookResponse: OrderbookResponse = await relayerClient.getOrderbookAsync(orderbookRequest);
+    console.log('orderbookResponse is: ', orderbookResponse)
+
+  return
+
   // Verify that order is fillable
   await zeroEx.exchange.validateOrderFillableOrThrowAsync(signedOrder)
 

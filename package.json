@@ -30,7 +30,6 @@
     "flow:0": "flow; exit 0",
     "flow-coverage": "flow-coverage-report",
     "format": "import-sort -l --write '*.js' 'src/**/*.js'; prettier-eslint --write '*.js' 'src/**/*.js'",
-    "precommit": "npm run test",
     "postinstall": "sh ./postinstall.sh",
     "ios:run": "react-native run-ios",
     "jest": "jest",
@@ -72,6 +71,7 @@
   },
   "dependencies": {
     "0x.js": "0.36.3",
+    "@0xproject/connect": "^1.0.4",
     "@0xproject/subproviders": "^1.0.4",
     "@0xproject/utils": "^0.5.2",
     "async-lock": "^1.1.2",
