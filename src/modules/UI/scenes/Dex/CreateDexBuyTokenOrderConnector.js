@@ -22,7 +22,6 @@ export const mapStateToProps = (state: State) => {
   const balanceInfo = getCryptoBalanceInfoFromWallet(wallet, currencyCode, state)
   const balance = balanceInfo.formattedCryptoBalance
   const symbol = balanceInfo.symbol
-  // const fiatCurrencyCode = wallet.fiatCurrencyCode
   const receiveAddress = wallet.receiveAddress.publicAddress
   const fiatBalance = getCurrencyAccountFiatBalanceFromWallet(wallet, currencyCode, state)
   const settings = state.ui.settings
@@ -34,7 +33,6 @@ export const mapStateToProps = (state: State) => {
     walletName,
     balance,
     symbol,
-    // fiatCurrencyCode,
     receiveAddress,
     fiatBalance,
     fiatSymbol

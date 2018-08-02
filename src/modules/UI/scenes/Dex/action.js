@@ -9,8 +9,11 @@ import { Web3ProviderEngine, RPCSubprovider, PrivateKeyWalletSubprovider } from 
 import { HttpClient } from '@0xproject/connect'
 import { getSelectedWallet } from '../../../UI/selectors.js'
 import * as Web3 from 'web3'
+import { BIDS, ASKS } from '../../../../constants/indexConstants.js'
 
 export const UPDATE_TOKEN_LIST = 'UPDATE_TOKEN_LIST'
+export const DEX_ORDER_BOOK_BIDS = 'DEX_ORDER_BOOK_BIDS'
+export const DEX_ORDER_BOOK_ASKS = 'DEX_ORDER_BOOK_ASKS'
 
 const NETWORK_ID = 1
 
@@ -22,8 +25,30 @@ const configs = {
   networkId: NETWORK_ID,
 }
 
+const RELAYER_API_URL = 'http://localhost:3000/v0'
+const ORDER_BOOK_API_URL = 'orderbook'
+const relayerAddress = '0x00ac112bf28ae1d0e9569af6844298283515f4b0'
+const relayerSubproviderAddress = 'http://127.0.0.1:8545'
+
 // Number of decimals to use (for ETH and ZRX)
 const DECIMALS = 18
+
+export const startWeb3Engine = (walletId: string, state: State) => {
+  const selectedWallet = getSelectedWallet(state)
+  const selectedWalletId = selectedWallet.id
+  const walletProviderEngine = providers[selectedWalletId]
+
+  const ethereumKey = state.core.wallets.byId[selectedWalletId].keys.ethereumKey
+  const engine = new Web3ProviderEngine()
+  // add a private key subprovider
+  engine.addProvider(new PrivateKeyWalletSubprovider(ethereumKey))
+  // also add an RPC subprovider
+  engine.addProvider(new RPCSubprovider(relayerSubproviderAddress))
+  // boot it up
+  engine.start()
+  providers[walletId] = engine
+  return providers[walletId]  
+}
 
 export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, ethAmount: string) => async (dispatch: Dispatch, getState: GetState) => {
   //dispatch(isCreateDexBuyTokenOrderProcessing(true))  
@@ -62,9 +87,6 @@ export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, e
   
   const makerAddress = selectedWallet.receiveAddress.publicAddress
 
-  // const takerAddress = '0xafeb54f5d23cc38761368962e1d287e8747e6707'
-  const relayerAddress = '0x00AC112bF28AE1D0e9569aF6844298283515F4b0'.toLowerCase()  
-
   const setMakerAllowTxHash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(TOKEN_CONTRACT_ADDRESS, makerAddress)
   await zeroEx.awaitTransactionMinedAsync(setMakerAllowTxHash)
 
@@ -83,13 +105,12 @@ export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, e
     makerFee: ZeroEx.toBaseUnitAmount(new BigNumber(10), 18), // How many ZRX the Maker will pay as a fee to the Relayer.
     takerFee: '0', // How many ZRX the Taker will pay as a fee to the Relayer.
     makerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(0.4), DECIMALS), // Base 18 decimals, The amount of ZRX token the Maker is offering.
-    takerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(0.02), DECIMALS), // Base 18 decimals, The amount of WETH token the Maker is requesting from the Taker.
+    takerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(0.021), DECIMALS), // Base 18 decimals, The amount of WETH token the Maker is requesting from the Taker.
     expirationUnixTimestampSec: new BigNumber(Date.now() + 3600000), // When will the order expire (in unix time), Valid for up to an hour
   }
 
     // Submit order to relayer
-    const relayerApiUrl = 'http://localhost:3000/v0'
-    const relayerClient = new HttpClient(relayerApiUrl)
+    const relayerClient = new HttpClient(RELAYER_API_URL)
     console.log('Relayer client set')
 
     // Send fees request to relayer and receive a FeesResponse instance
@@ -113,9 +134,12 @@ export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, e
 
     Alert.alert('Order Submitted', 'Your order has been submitted')
     //dispatch(isCreateDexBuyTokenOrderProcessing(false))  
-
+    const orderbookRequest: OrderbookRequest = {
+      baseTokenAddress: TOKEN_CONTRACT_ADDRESS,
+      quoteTokenAddress: WETH_CONTRACT_ADDRESS,
+  }
     // Send orderbook request to relayer and receive an OrderbookResponse instance
-    const orderbookResponse: OrderbookResponse = await relayerClient.getOrderbookAsync(orderbookRequest);
+    const orderbookResponse: OrderbookResponse = await relayerClient.getOrderbookAsync(orderbookRequest)
     console.log('orderbookResponse is: ', orderbookResponse)
 
   return
@@ -142,7 +166,14 @@ export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, e
 }
 
 export const fetchTokenList = () => (dispatch: Dispatch, getState: GetState) => {
-  fetch('https://raw.githubusercontent.com/kvhnuke/etherwallet/mercury/app/scripts/tokens/ethTokens.json')
+
+  fetch('https://raw.githubusercontent.com/kvhnuke/etherwallet/mercury/app/scripts/tokens/ethTokens.json', 
+   {
+      headers: {
+        'Method': 'GET',
+        'Content-Type': 'application/json; charset=utf-8'
+      }}
+    )
     .then((response) => {
       const tokenList = JSON.parse(response._bodyText)
       console.log('kylan testing, tokenList is: ', tokenList)
@@ -156,6 +187,45 @@ export const fetchTokenList = () => (dispatch: Dispatch, getState: GetState) => 
 export function updateTokenList (tokenDirectory: Array<Object>) {
   return {
     type: UPDATE_TOKEN_LIST,
-    data: tokenDirectory
+    data: { tokenDirectory }
+  }
+}
+
+export const fetchDexOrderBook = (type: string, tokenCode: string) => (dispatch: Dispatch, getState: GetState) => {
+  const state = getState()
+  
+  const tokenDirectory = state.ui.scenes.dex.tokenDirectory
+  const tokenInfo = tokenDirectory.find(token => token.symbol === tokenCode )
+  if (!tokenInfo) console.log('Token contract address not found for ', tokenCode)
+  const TOKEN_CONTRACT_ADDRESS = tokenInfo.address.toLowerCase()
+
+  const selectedWallet = getSelectedWallet(state)
+  const selectedWalletId = selectedWallet.id
+  const walletProviderEngine = providers[selectedWalletId]
+  let web3Engine = providers[selectedWalletId]
+  if (!web3Engine) web3Engine = startWeb3Engine(selectedWalletId, state)  
+  const zeroEx = new ZeroEx(providers[selectedWalletId], configs)
+  const web3Wrapper = new Web3Wrapper(web3Engine)
+
+  const WETH_CONTRACT_ADDRESS = zeroEx.etherToken.getContractAddressIfExists() // The wrapped ETH token contract  
+ 
+  fetch(`${RELAYER_API_URL}/${ORDER_BOOK_API_URL}/?baseTokenAddress=${WETH_CONTRACT_ADDRESS}&quoteTokenAddress=${TOKEN_CONTRACT_ADDRESS}`, 
+    {headers: {
+      'Method': 'GET',
+      'Content-Type': 'application/json; charset=utf-8'
+    }}
+  )
+  .then(response => {
+    console.log('response is: ', response)
+    const orderBook = JSON.parse(response._bodyText)
+    console.log('orderBook is: ', orderBook)
+    dispatch(updateDexOrderBookBids(orderBook.bids))
+  })
+}
+
+export function updateDexOrderBookBids (orderBookBids: Array<any>) {
+  return {
+    type: DEX_ORDER_BOOK_BIDS,
+    data: { orderBookBids }
   }
 }

@@ -136,7 +136,9 @@ test('initialState', () => {
       walletTransferList: []
     },
     dex: {
-      tokenDirectory: []
+      tokenDirectory: [],
+      orderBookBids: [],
+      orderBookAsks: []
     },
     currentScene: '',
     passwordReminderModal: {

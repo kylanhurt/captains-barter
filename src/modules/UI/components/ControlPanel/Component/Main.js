@@ -32,11 +32,12 @@ const PLUGIN_BUYSELL_TEXT = s.strings.title_plugin_buysell
 
 export type Props = {
   logout: (username?: string) => void,
-  usersView: boolean
+  usersView: boolean,
+  currencyCode: string
 }
 export default class Main extends Component<Props> {
   render () {
-    const { usersView } = this.props
+    const { usersView, currencyCode } = this.props
 
     return usersView ? (
       <UserList />
@@ -56,7 +57,7 @@ export default class Main extends Component<Props> {
           <Separator />
           <ExchangeButton />
           <Separator />
-          <DEXButton />
+          <DEXButton currencyCode={currencyCode} />
           <Separator />
         </View>
 
@@ -188,9 +189,18 @@ const ExchangeButton = () => {
   )
 }
 
-const DEXButton = () => {
+const routeToDex = (currencyCode: string) => {
+  // if (currencyCode === 'ETH') {
+    Actions.dex()    
+  // } else {
+    // console.log('Please select Ethereum wallet before attempting to access DEX')
+
+  //} 
+}
+
+const DEXButton = (currencyCode: string) => {
   return (
-    <Button onPress={Actions.dex}>
+    <Button onPress={() => routeToDex(currencyCode)}>
       <Button.Row>
         <Button.Left>
           <Image source={exchangeIcon} style={styles.iconImage} />

@@ -11,7 +11,7 @@ import { CREATE_DEX_SELECT_TOKEN } from '../../../../constants/SceneKeys.js'
 import s from '../../../../locales/strings.js'
 import { PrimaryButton } from '../../components/Buttons'
 import Text from '../../components/FormattedText'
-import Gradient from '../../components/Gradient/Gradient.ui'
+import { Gradient } from '../../components/Gradient/Gradient.ui.js'
 import SafeAreaView from '../../components/SafeAreaView'
 import styles from './style.js'
 

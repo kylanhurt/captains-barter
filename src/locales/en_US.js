@@ -313,6 +313,7 @@ const strings = {
   dex_create_order_wallet_title: 'Wallet:',
   dex_create_order_balance_title: 'Balance:',
   dex_create_order_address_title: 'Address:',
+  dex_browse_order_book_instructions: 'Select a token to purchse with your ETH and then click on an order to fill it:',
 
   // export scene
   string_export_qbo: 'Export Quickbooks QBO',

@@ -6,7 +6,7 @@ import {Actions} from 'react-native-router-flux'
 import s from '../../../../locales/strings.js'
 import { PrimaryButton, SecondaryButton, TertiaryButton } from '../../components/Modals/components/index.js'
 import Text from '../../components/FormattedText'
-import Gradient from '../../components/Gradient/Gradient.ui'
+import { Gradient } from '../../components/Gradient/Gradient.ui'
 import SafeAreaView from '../../components/SafeAreaView'
 import styles, { styles as rawStyle } from './style.js'
 
