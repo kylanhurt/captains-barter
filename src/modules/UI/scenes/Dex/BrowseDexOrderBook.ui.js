@@ -7,7 +7,8 @@ import { Actions } from 'react-native-router-flux'
 import {
   CREATE_DEX_SELECT_TOKEN, BIDS, ASKS
 } from '../../../../constants/indexConstants.js'
-
+import SearchResults from '../../components/SearchResults'
+import OrderBookResult from './components/OrderBookResultConnector.js'
 import { TertiaryButton } from '../../components/Modals/components/TertiaryButton.ui.js'
 import Text from '../../components/FormattedText'
 import { Gradient } from '../../components/Gradient/Gradient.ui.js'
@@ -66,7 +67,20 @@ export class BrowseDexOrderBookComponent extends Component<BrowseDexOrderBookPro
     })
   }
 
+  _onSelectOrder = () => {
+    console.log('order selected')
+  }
+
+  renderOrderBookResult = (data) => {
+    return (
+      <OrderBookResult data={data} currencyCode={this.state.tokenCode}/>
+    )
+  }
+
+  keyExtractor = (item: GuiWalletType, index: number): number => index  
+
   render () {
+    const orderBookBids = this.props.orderBookBids
     return (
       <SafeAreaView>
         <View style={[styles.scene]}>
@@ -84,9 +98,15 @@ export class BrowseDexOrderBookComponent extends Component<BrowseDexOrderBookPro
                 </TertiaryButton>
               </View>
             </View>
-            <ScrollView style={styles.container}>
-              <Text>Hi</Text>
-            </ScrollView>            
+            <ScrollView style={styles.orderBookResultsScrollView}>
+              <SearchResults
+                renderRegularResultFxn={this.renderOrderBookResult}
+                onRegularSelectFxn={this._onSelectOrder}
+                regularArray={orderBookBids}
+                containerStyle={[styles.orderBookResultsContainer]}
+                keyExtractor={this.keyExtractor}            
+              />
+            </ScrollView>
             <View style={styles.bottomPaddingForKeyboard} />
           </View>
         </View>        

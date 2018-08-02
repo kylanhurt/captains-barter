@@ -164,6 +164,19 @@ export const styles = {
     borderBottomColor: THEME.COLORS.GRAY_3,
     width: '100%'
   },
+  orderBookResultsScrollView: {
+    height: 600
+  },
+  orderBookResultsContainer: {
+    position: 'relative',
+    backgroundColor: THEME.COLORS.TRANSPARENT,
+    borderBottomWidth: 1,
+    borderBottomColor: THEME.COLORS.GRAY_3,
+    width: '100%'
+  },
+  orderBookResultInfo: {
+    flexDirection: 'row'
+  },
   underlayColor: {
     color: THEME.COLORS.GRAY_4
   },
