@@ -66,6 +66,7 @@ export default class SearchResults extends Component<Props, State> {
           keyExtractor={this.props.keyExtractor}
           overScrollMode="never"
           keyboardShouldPersistTaps="handled"
+          ItemSeparatorComponent={this.props.ItemSeparatorComponent || null}
         />
       </View>
     )

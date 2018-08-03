@@ -287,7 +287,7 @@ const strings = {
 
   password_check_check_later: 'Later',
   password_check_check_my_password: 'Check MY Password',
-  password_check_checking: 'Checking password…',
+  password_check_checking: 'Checking password...',
   password_check_current_password: 'Current password',
   password_check_great_job: 'Great job remembering your password.',
   password_check_incorrect_password_message: 'Incorrect Password. Try again?',
@@ -314,6 +314,8 @@ const strings = {
   dex_create_order_balance_title: 'Balance:',
   dex_create_order_address_title: 'Address:',
   dex_browse_order_book_instructions: 'Select a token to purchse with your ETH and then click on an order to fill it:',
+  dex_order_book_result_expiration: 'Expiration:',
+  dex_order_book_result_not_applicable: 'n/a',
 
   // export scene
   string_export_qbo: 'Export Quickbooks QBO',

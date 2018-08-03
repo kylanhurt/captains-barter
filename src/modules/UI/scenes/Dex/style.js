@@ -175,7 +175,26 @@ export const styles = {
     width: '100%'
   },
   orderBookResultInfo: {
-    flexDirection: 'row'
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    paddingHorizontal: 8,
+    paddingVertical: 4
+  },
+  orderBookResultAmountsArea:{
+    marginBottom: 6
+  },
+  orderBookResultAmountsText: {
+    fontSize: 14
+  },
+  orderBookResultExpirationArea: {
+
+  },
+  orderBookResultExpirationText: {
+    fontSize: 14
+  },
+  orderBookResultSeparator: {
+    borderBottomWidth: 2,
+    borderBottomColor: THEME.COLORS.GRAY_1
   },
   underlayColor: {
     color: THEME.COLORS.GRAY_4

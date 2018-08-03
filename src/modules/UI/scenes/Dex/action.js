@@ -106,7 +106,7 @@ export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, e
     takerFee: '0', // How many ZRX the Taker will pay as a fee to the Relayer.
     makerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(0.4), DECIMALS), // Base 18 decimals, The amount of ZRX token the Maker is offering.
     takerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(0.021), DECIMALS), // Base 18 decimals, The amount of WETH token the Maker is requesting from the Taker.
-    expirationUnixTimestampSec: new BigNumber(Date.now() + 3600000), // When will the order expire (in unix time), Valid for up to an hour
+    expirationUnixTimestampSec: new BigNumber(Date.now() + 28800000), // When will the order expire (in unix time), Valid for up to 8 hours
   }
 
     // Submit order to relayer

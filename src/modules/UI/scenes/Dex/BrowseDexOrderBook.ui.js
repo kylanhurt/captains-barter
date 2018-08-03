@@ -77,6 +77,12 @@ export class BrowseDexOrderBookComponent extends Component<BrowseDexOrderBookPro
     )
   }
 
+  renderItemSeparatorComponent = () => {
+    return (
+      <View style={styles.orderBookResultSeparator}></View>
+    )
+  }
+
   keyExtractor = (item: GuiWalletType, index: number): number => index  
 
   render () {

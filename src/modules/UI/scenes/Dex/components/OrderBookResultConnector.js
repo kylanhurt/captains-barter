@@ -11,6 +11,7 @@ import {
   secondsToHms
 } from '../../../../utils.js'
 import { OrderBookResultComponent } from './OrderBookResult.ui.js'
+import s from '../../../../../locales/strings.js'
 
 const WETH_DECIMAL = 18
 const WETH_DECIMAL_STRING = WETH_DECIMAL.toString()
@@ -21,21 +22,21 @@ export const mapStateToProps = (state: State, ownProps) => {
   const decimal = tokenInfo.decimal
   const makerTokenAmount = ownProps.data.item.makerTokenAmount
   const tokenMultiplier = 1 + '0'.repeat(decimal)
-  const makerNativeTokenAmount = bns.div(makerTokenAmount, tokenMultiplier)
+  const makerNativeTokenAmount = bns.div(makerTokenAmount, tokenMultiplier, 12)
   const takerTokenAmount = ownProps.data.item.takerTokenAmount
-  const takerNativeTokenAmount = bns.div(takerTokenAmount, WETH_MULTIPLIER)
-  // const exchangeRate = bns.div(makerNativeTokenAmount, takerNativeTokenAmount)
-  const currentUnixTimestamp = Date.now().toString()
-  const expirationUnixTimestampSec = ownProps.data.item.expirationUnixTimestampSec
-  const timeDifference = bns.sub(expirationUnixTimestampSec - currentUnixTimestamp)
-  const expiration = secondsToHms(timeDifference)
+  const takerNativeTokenAmount = bns.div(takerTokenAmount, WETH_MULTIPLIER, 12)
+  const exchangeRate = bns.div(makerNativeTokenAmount, takerNativeTokenAmount, 8, 10)
+  const currentUnixTimestamp = Date.now()
+  const expirationUnixTimestampSec = parseInt(ownProps.data.item.expirationUnixTimestampSec)
+  const timeDifference = expirationUnixTimestampSec / 1000 - currentUnixTimestamp / 1000
+  const expiration = secondsToHms(timeDifference) || s.strings.dex_order_book_result_not_applicable
   return {
     tokenInfo,
     decimal,
     makerNativeTokenAmount,
     takerNativeTokenAmount,
-    expiration
-    // exchangeRate
+    expiration,
+    exchangeRate
   }
 }
 
