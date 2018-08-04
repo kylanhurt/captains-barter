@@ -29,6 +29,7 @@ export const mapStateToProps = (state: State) => {
   const settings = state.ui.settings
   const fiatSymbol = settings.defaultFiat ? getFiatSymbol(settings.defaultFiat) : ''
   const orderBookBids = state.ui.scenes.dex.orderBookBids
+  const isConfirmFillDexOrderModalVisible =  state.ui.scenes.dex.isConfirmFillDexOrderModalVisible
   return {
     selectedWalletId,
     wallet,
@@ -39,7 +40,8 @@ export const mapStateToProps = (state: State) => {
     receiveAddress,
     fiatBalance,
     fiatSymbol,
-    orderBookBids
+    orderBookBids,
+    isConfirmFillDexOrderModalVisible
   }
 }
 

@@ -316,6 +316,8 @@ const strings = {
   dex_browse_order_book_instructions: 'Select a token to purchse with your ETH and then click on an order to fill it:',
   dex_order_book_result_expiration: 'Expiration:',
   dex_order_book_result_not_applicable: 'n/a',
+  dex_confirm_fill_dex_order_title: 'Confirm DEX Order Fill',
+  dex_submit_confirm_dex_order: 'Confirm Order',
 
   // export scene
   string_export_qbo: 'Export Quickbooks QBO',

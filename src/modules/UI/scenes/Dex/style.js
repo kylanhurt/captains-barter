@@ -196,6 +196,30 @@ export const styles = {
     borderBottomWidth: 2,
     borderBottomColor: THEME.COLORS.GRAY_1
   },
+  confirmDexOrderInfoArea:{
+    marginBottom: 6
+  },
+  confirmDexOrderAmountsText: {
+    textAlign: 'center',
+    fontSize: 18,
+    lineHeight: 24
+  },
+  confirmDexOrderRateText: {
+    textAlign: 'center',    
+    fontSize: 18,
+    lineHeight: 24
+  },
+  confirmDexOrderExpirationText: {
+    textAlign: 'center',    
+    fontSize: 18,
+    lineHeight: 24
+  },  
+  confirmFillDexOrderModalSubmitButton: {
+    marginBottom: 8
+  },
+  confirmFillDexOrderModalSubmitButtonText: {
+    color: THEME.COLORS.WHITE
+  },
   underlayColor: {
     color: THEME.COLORS.GRAY_4
   },

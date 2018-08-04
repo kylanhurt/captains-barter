@@ -3,10 +3,12 @@
 import {
   UPDATE_TOKEN_LIST,
   DEX_ORDER_BOOK_BIDS,
-  DEX_ORDER_BOOK_ASKS
+  DEX_ORDER_BOOK_ASKS,
+  CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE,
+  CONFIRM_FILL_DEX_ORDER_PROCESSING
 } from './action.js'
 import { combineReducers } from 'redux'
-import type { DirectoryTokenInfo } from '../../../../types.js'
+import type { DirectoryTokenInfo, DEXOrder, FormattedDEXOrderInfo } from '../../../../types.js'
 import type { Action } from '../../../ReduxTypes.js'
 
 export const tokenDirectory = (state: Array<DirectoryTokenInfo> = [], action: Action) => {
@@ -36,8 +38,47 @@ export const orderBookAsks = (state: Array<any> = [], action: Action) => {
   }
 }
 
+export const isConfirmFillDexOrderModalVisible = (state: boolean = false, action: Action) => {
+  switch (action.type) {
+    case CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE:
+      return action.data.isConfirmFillDexOrderModalVisible
+    default:
+      return state
+  }
+}
+
+export const isConfirmFillDexOrderSubmitProcessing = (state: boolean = false, action: Action) => {
+  switch (action.type) {
+    case CONFIRM_FILL_DEX_ORDER_PROCESSING:
+      return action.data.isConfirmFillDexOrderSubmitProcessing
+    default:
+      return state
+  }
+}
+
+export const selectedDEXOrderToFill = (state: DEXOrder | null = null, action: Action) => {
+  switch (action.type) {
+    case CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE:
+      return action.data.order
+    default:
+      return state
+  }
+}
+export const selectedDEXFormattedOrderToFill = (state: FormattedDEXOrderInfo | null = null, action: Action) => {
+  switch (action.type) {
+    case CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE:
+      return action.data.formattedOrderInfo
+    default:
+      return state
+  }
+}
+
 export const dex = combineReducers({
   tokenDirectory,
   orderBookBids,
-  orderBookAsks
+  orderBookAsks,
+  isConfirmFillDexOrderModalVisible,
+  isConfirmFillDexOrderSubmitProcessing,
+  selectedDEXOrderToFill,
+  selectedDEXFormattedOrderToFill
 })

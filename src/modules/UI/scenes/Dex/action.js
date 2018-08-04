@@ -10,10 +10,13 @@ import { HttpClient } from '@0xproject/connect'
 import { getSelectedWallet } from '../../../UI/selectors.js'
 import * as Web3 from 'web3'
 import { BIDS, ASKS } from '../../../../constants/indexConstants.js'
+import type { DEXOrder } from '../../../../types.js'
 
 export const UPDATE_TOKEN_LIST = 'UPDATE_TOKEN_LIST'
 export const DEX_ORDER_BOOK_BIDS = 'DEX_ORDER_BOOK_BIDS'
 export const DEX_ORDER_BOOK_ASKS = 'DEX_ORDER_BOOK_ASKS'
+export const CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE = 'CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE'
+export const CONFIRM_FILL_DEX_ORDER_PROCESSING = 'CONFIRM_FILL_DEX_ORDER_PROCESSING'
 
 const NETWORK_ID = 1
 
@@ -228,4 +231,26 @@ export function updateDexOrderBookBids (orderBookBids: Array<any>) {
     type: DEX_ORDER_BOOK_BIDS,
     data: { orderBookBids }
   }
+}
+
+export const showConfirmFillDexOrderModal = (formattedOrderInfo: FormattedDEXOrderInfo) => (dispatch: Dispatch, getState: GetState) => {
+  const isConfirmFillDexOrderModalVisible = true
+  const state = getState()
+  const order = state.ui.scenes.dex.selectedDEXOrderToFill
+  dispatch({
+    type: CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE,
+    data: { order, formattedOrderInfo, isConfirmFillDexOrderModalVisible }
+  })
+}
+
+export const hideConfirmFillDexOrderModal = () => (dispatch: Dispatch) => {
+  const isConfirmFillDexOrderModalVisible = false
+  dispatch({
+    type: CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE,
+    data: { isConfirmFillDexOrderModalVisible }
+  })
+}
+
+export const fillDexOrder = () => (dispatch: Dispatch, getState: GetState) => {
+  console.log('Filling dex order')
 }

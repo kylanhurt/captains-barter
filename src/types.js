@@ -187,3 +187,33 @@ export type TokenDirectorySearchResult = {
   item: DirectoryTokenInfo,
   separators?: any
 }
+
+export type DEXOrderSignature = {
+  r: string,
+  s: string,
+  v: number
+}
+
+export type DEXOrder = {
+  maker: string,
+  taker: string,
+  feeRecipient: string,
+  makerTokenAddress: string,
+  takerTokenAddress: string,
+  exchangeContractAddress: string,
+  salt: string,
+  makerFee: string,
+  takerFee: string,
+  makerTokenAmount: string,
+  takerTokenAmount: string,
+  expirationUnixTimestampSec: string,
+  ecSignature: DEXOrderSignature 
+}
+
+export type FormattedDEXOrderInfo = {
+  makerNativeTokenAmount: string,
+  takerNativeTokenAmount: string,  
+  currencyCode: string,
+  exchangeRate: string,
+  expiration: string
+}

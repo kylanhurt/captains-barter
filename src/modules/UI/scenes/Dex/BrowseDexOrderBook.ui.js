@@ -14,6 +14,7 @@ import Text from '../../components/FormattedText'
 import { Gradient } from '../../components/Gradient/Gradient.ui.js'
 import SafeAreaView from '../../components/SafeAreaView'
 import styles from './style.js'
+import { ConfirmFillDexOrderModalConnector as ConfirmFillDexOrderModal} from './components/ConfirmFillDexOrderModalConnector.js'
 
 export type BrowseDexOrderBookOwnProps = {
   selectedWalletId: string,
@@ -115,7 +116,8 @@ export class BrowseDexOrderBookComponent extends Component<BrowseDexOrderBookPro
             </ScrollView>
             <View style={styles.bottomPaddingForKeyboard} />
           </View>
-        </View>        
+        </View>
+        <ConfirmFillDexOrderModal />
       </SafeAreaView>
     )
   }

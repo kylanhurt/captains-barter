@@ -138,7 +138,8 @@ test('initialState', () => {
     dex: {
       tokenDirectory: [],
       orderBookBids: [],
-      orderBookAsks: []
+      orderBookAsks: [],
+      isConfirmFillDexOrderModalVisible: false
     },
     currentScene: '',
     passwordReminderModal: {
