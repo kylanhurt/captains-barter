@@ -303,6 +303,8 @@ const strings = {
   dex_title_long: 'Decentralized Exchange',
   dex_title_buy_sell: 'Buy or Sell',
   dex_buy_tokens_button_title: 'Buy Tokens\nwith ETH',
+  dex_buy_tokens_enter_token_amount_to_buy: 'Enter token amount to buy here:',
+  dex_buy_tokens_enter_weth_amount_to_purchase_with: 'Enter WETH amount to purchase with here:',
   dex_sell_tokens_button_title: 'Sell Tokens\nfor ETH',
   dex_browse_button_title: 'Browse Open\nOrders',
   dex_create_order_title: 'Create Order',

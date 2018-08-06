@@ -78,7 +78,7 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
   }
 
   _onChangeTokenAmountInput = (input: string) => {
-    console.log('input is: ', input)
+    console.log('DEX: input is: ', input)
     if (!intl.isValidInput(input)) {
       return
     }
@@ -89,7 +89,7 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
   }
 
   _onChangeEthAmountInput = (input: string) => {
-    console.log('input is: ', input)
+    console.log('DEX: input is: ', input)
     if (!intl.isValidInput(input)) {
       return
     }
@@ -114,7 +114,7 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
             <View style={styles.formArea}>
               <View style={[styles.textInputArea]}>
                 <TertiaryButton onPress={this._onPressTokenCodeButton}>
-                  <TertiaryButton.Text>{this.state.tokenCode || 'Find Token Code'}</TertiaryButton.Text>
+                  <TertiaryButton.Text>{this.state.tokenCode || 'Select Token Code to Buy'}</TertiaryButton.Text>
                 </TertiaryButton>
               </View>
               <View style={[styles.textInputArea]}>
@@ -122,7 +122,7 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
                   style={[styles.tokenAmountInput]}
                   value={this.state.tokenAmount}
                   keyboardType={'decimal-pad'}
-                  label={'Enter token amount here:'}
+                  label={s.strings.dex_buy_tokens_enter_token_amount_to_buy}
                   returnKeyType={'next'}
                   onChangeText={this._onChangeTokenAmountInput}
                 />
@@ -131,7 +131,7 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
                 <FormField
                   style={[styles.ethAmountInput]}
                   value={this.state.ethAmount}
-                  label={'Enter ETH amount here:'}
+                  label={s.strings.dex_buy_tokens_enter_weth_amount_to_purchase_with}
                   returnKeyType={'done'}
                   keyboardType={'decimal-pad'}
                   onChangeText={this._onChangeEthAmountInput}
@@ -154,7 +154,7 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
 
   _onSubmit = () => {
     const { tokenCode, tokenAmount, ethAmount } = this.state
-    console.log('submission executing')
+    console.log('DEX: submission executing')
     this.props.submitDexBuyTokenOrder(tokenCode, tokenAmount, ethAmount)
   }
 }

@@ -69,7 +69,7 @@ export class BrowseDexOrderBookComponent extends Component<BrowseDexOrderBookPro
   }
 
   _onSelectOrder = () => {
-    console.log('order selected')
+    console.log('DEX: order selected')
   }
 
   renderOrderBookResult = (data) => {

@@ -15,7 +15,7 @@ import {
   showConfirmFillDexOrderModal
 } from '../action.js'
 import { OrderBookResultComponent } from './OrderBookResult.ui.js'
-import type { DEXOrder } from '../../../../../types.js'
+import type { DEXOrder, FormattedDEXOrderInfo } from '../../../../../types.js'
 import s from '../../../../../locales/strings.js'
 
 const WETH_DECIMAL = 18
@@ -47,9 +47,10 @@ export const mapStateToProps = (state: State, ownProps) => {
   }
 }
 
-export const mapDispatchToProps = (dispatch: Dispatch) => ({
-  showConfirmFillDexOrderModal: (formattedOrderInfo: FormattedDEXOrderInfo) => dispatch(showConfirmFillDexOrderModal(formattedOrderInfo)),
-  // fillDexOrder: () => dispatch(fillDexOrder())
-})
+export const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    showConfirmFillDexOrderModal: (order: DEXOrder, formattedOrderInfo: FormattedDEXOrderInfo) => dispatch(showConfirmFillDexOrderModal(order, formattedOrderInfo)),
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderBookResultComponent)

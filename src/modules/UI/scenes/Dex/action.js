@@ -3,14 +3,17 @@
 import type { GetState, Dispatch } from '../../../ReduxTypes.js'
 import { Alert } from 'react-native'
 import { DecodedLogEvent, ZeroEx } from '0x.js'
+// import { ERC20TokenWrapper } from ''
 import { BigNumber } from '@0xproject/utils'
+import { bns } from 'biggystring'
 import { Web3Wrapper } from '@0xproject/web3-wrapper'
 import { Web3ProviderEngine, RPCSubprovider, PrivateKeyWalletSubprovider } from '@0xproject/subproviders'
 import { HttpClient } from '@0xproject/connect'
 import { getSelectedWallet } from '../../../UI/selectors.js'
 import * as Web3 from 'web3'
 import { BIDS, ASKS } from '../../../../constants/indexConstants.js'
-import type { DEXOrder } from '../../../../types.js'
+import type { DEXOrder, FormattedDEXOrderInfo } from '../../../../types.js'
+import { convertBiggystringToNativeBigNumber } from '../../../utils.js'
 
 export const UPDATE_TOKEN_LIST = 'UPDATE_TOKEN_LIST'
 export const DEX_ORDER_BOOK_BIDS = 'DEX_ORDER_BOOK_BIDS'
@@ -78,9 +81,9 @@ export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, e
   const accounts = await web3Wrapper.getAvailableAddressesAsync();
   console.log(accounts)
 
-  const WETH_CONTRACT_ADDRESS: string = zeroEx.etherToken.getContractAddressIfExists() // The wrapped ETH token contract  
+  const WETH_CONTRACT_ADDRESS = zeroEx.etherToken.getContractAddressIfExists() // The wrapped ETH token contract  
   const tokenInfo = tokenDirectory.find(token => token.symbol === tokenCode )
-  if (!tokenInfo) console.log('Token contract address not found for ', tokenCode)
+  if (!tokenInfo) console.log('DEX: Token contract address not found for ', tokenCode)
   const TOKEN_CONTRACT_ADDRESS = tokenInfo.address.toLowerCase()
   // The Exchange.sol address (0x exchange smart contract)
   // Retrieves the Ethereum address of the Exchange contract deployed on the network
@@ -105,20 +108,20 @@ export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, e
     takerTokenAddress: WETH_CONTRACT_ADDRESS, // The token address the Maker is requesting from the Taker.
     exchangeContractAddress: EXCHANGE_CONTRACT_ADDRESS, // The exchange.sol address.
     salt: ZeroEx.generatePseudoRandomSalt(), // Random number to make the order (and therefore its hash) unique.
-    makerFee: ZeroEx.toBaseUnitAmount(new BigNumber(10), 18), // How many ZRX the Maker will pay as a fee to the Relayer.
-    takerFee: '0', // How many ZRX the Taker will pay as a fee to the Relayer.
-    makerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(0.4), DECIMALS), // Base 18 decimals, The amount of ZRX token the Maker is offering.
-    takerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(0.021), DECIMALS), // Base 18 decimals, The amount of WETH token the Maker is requesting from the Taker.
+    makerFee: ZeroEx.toBaseUnitAmount(new BigNumber(.01), DECIMALS), // How many ZRX the Maker will pay as a fee to the Relayer.
+    takerFee: ZeroEx.toBaseUnitAmount(new BigNumber(0), DECIMALS), // How many ZRX the Taker will pay as a fee to the Relayer.
+    makerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(1), DECIMALS), // Base 18 decimals, The amount of ZRX token the Maker is offering.
+    takerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(0.0025), DECIMALS), // Base 18 decimals, The amount of WETH token the Maker is requesting from the Taker.
     expirationUnixTimestampSec: new BigNumber(Date.now() + 28800000), // When will the order expire (in unix time), Valid for up to 8 hours
   }
 
     // Submit order to relayer
     const relayerClient = new HttpClient(RELAYER_API_URL)
-    console.log('Relayer client set')
+    console.log('DEX: Relayer client set')
 
     // Send fees request to relayer and receive a FeesResponse instance
     const feesResponse: FeesResponse = await relayerClient.getFeesAsync(feesRequest)
-    console.log('feesResponse is: ', feesResponse)
+    console.log('DEX: feesResponse is: ', feesResponse)
     const order: Order = {
       ...feesRequest,
       ...feesResponse,
@@ -133,7 +136,7 @@ export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, e
       ecSignature,
     }
     await relayerClient.submitOrderAsync(signedOrder)
-    console.log('orderHash is: ', orderHash)
+    console.log('DEX: orderHash is: ', orderHash)
 
     Alert.alert('Order Submitted', 'Your order has been submitted')
     //dispatch(isCreateDexBuyTokenOrderProcessing(false))  
@@ -143,10 +146,10 @@ export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, e
   }
     // Send orderbook request to relayer and receive an OrderbookResponse instance
     const orderbookResponse: OrderbookResponse = await relayerClient.getOrderbookAsync(orderbookRequest)
-    console.log('orderbookResponse is: ', orderbookResponse)
+    console.log('DEX: orderbookResponse is: ', orderbookResponse)
 
   return
-
+  /*
   // Verify that order is fillable
   await zeroEx.exchange.validateOrderFillableOrThrowAsync(signedOrder)
 
@@ -165,7 +168,8 @@ export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, e
 
   // Transaction receipt
   const txReceipt = await zeroEx.awaitTransactionMinedAsync(txHash)
-  console.log('FillOrder transaction receipt: ', txReceipt)
+  console.log('DEX: FillOrder transaction receipt: ', txReceipt)
+  */
 }
 
 export const fetchTokenList = () => (dispatch: Dispatch, getState: GetState) => {
@@ -179,7 +183,7 @@ export const fetchTokenList = () => (dispatch: Dispatch, getState: GetState) => 
     )
     .then((response) => {
       const tokenList = JSON.parse(response._bodyText)
-      console.log('kylan testing, tokenList is: ', tokenList)
+      console.log('DEX: kylan testing, tokenList is: ', tokenList)
       dispatch(updateTokenList(tokenList))
     })
     .catch((error) => {
@@ -199,12 +203,11 @@ export const fetchDexOrderBook = (type: string, tokenCode: string) => (dispatch:
   
   const tokenDirectory = state.ui.scenes.dex.tokenDirectory
   const tokenInfo = tokenDirectory.find(token => token.symbol === tokenCode )
-  if (!tokenInfo) console.log('Token contract address not found for ', tokenCode)
+  if (!tokenInfo) console.log('DEX: Token contract address not found for ', tokenCode)
   const TOKEN_CONTRACT_ADDRESS = tokenInfo.address.toLowerCase()
 
   const selectedWallet = getSelectedWallet(state)
   const selectedWalletId = selectedWallet.id
-  const walletProviderEngine = providers[selectedWalletId]
   let web3Engine = providers[selectedWalletId]
   if (!web3Engine) web3Engine = startWeb3Engine(selectedWalletId, state)  
   const zeroEx = new ZeroEx(providers[selectedWalletId], configs)
@@ -219,9 +222,9 @@ export const fetchDexOrderBook = (type: string, tokenCode: string) => (dispatch:
     }}
   )
   .then(response => {
-    console.log('response is: ', response)
+    console.log('DEX: response is: ', response)
     const orderBook = JSON.parse(response._bodyText)
-    console.log('orderBook is: ', orderBook)
+    console.log('DEX: orderBook is: ', orderBook)
     dispatch(updateDexOrderBookBids(orderBook.bids))
   })
 }
@@ -233,10 +236,9 @@ export function updateDexOrderBookBids (orderBookBids: Array<any>) {
   }
 }
 
-export const showConfirmFillDexOrderModal = (formattedOrderInfo: FormattedDEXOrderInfo) => (dispatch: Dispatch, getState: GetState) => {
+export const showConfirmFillDexOrderModal = (order: DEXOrder, formattedOrderInfo: FormattedDEXOrderInfo) => (dispatch: Dispatch, getState: GetState) => {
   const isConfirmFillDexOrderModalVisible = true
   const state = getState()
-  const order = state.ui.scenes.dex.selectedDEXOrderToFill
   dispatch({
     type: CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE,
     data: { order, formattedOrderInfo, isConfirmFillDexOrderModalVisible }
@@ -251,6 +253,75 @@ export const hideConfirmFillDexOrderModal = () => (dispatch: Dispatch) => {
   })
 }
 
-export const fillDexOrder = () => (dispatch: Dispatch, getState: GetState) => {
-  console.log('Filling dex order')
+export const fillDEXOrder = () => async (dispatch: Dispatch, getState: GetState) => {
+  const state = getState()
+  const order = state.ui.scenes.dex.selectedDEXOrderToFill
+  const selectedWallet = getSelectedWallet(state)
+  const selectedWalletId = selectedWallet.id
+  const takerAddress = selectedWallet.receiveAddress.publicAddress // this is the current user's address (filler)
+  let web3Engine = providers[selectedWalletId]
+  if (!web3Engine) web3Engine = startWeb3Engine(selectedWalletId, state)
+  const zeroEx = new ZeroEx(providers[selectedWalletId], configs)
+  const web3Wrapper = new Web3Wrapper(web3Engine)
+  const WETH_CONTRACT_ADDRESS = zeroEx.etherToken.getContractAddressIfExists() // The wrapped ETH token contract  
+
+  // check to see if there's enough WETH to fill the order
+  const WETHBalance = selectedWallet.nativeBalances['WETH']
+  const WETHOrderAmount = order.takerTokenAmount
+
+  // if there isn't enough WETH balance to fund the fulfillment then do am ETH -> WETH conversion routine
+  if (bns.lt(WETHBalance, WETHOrderAmount)) {
+    console.log('DEX: convert ETH to WETH')
+    const WETH_DECIMAL_STRING = DECIMALS.toString()
+    const WETH_MULTIPLIER = 1 + '0'.repeat(WETH_DECIMAL_STRING)
+    const WETHDeficit =  bns.sub(WETHOrderAmount, WETHBalance)
+    const WETHNativeDeficit = bns.div(WETHDeficit, WETH_MULTIPLIER, 12)
+    const bigNumberEthToConvert = new BigNumber(WETHNativeDeficit)
+    
+    const ethToConvert = ZeroEx.toBaseUnitAmount(bigNumberEthToConvert, DECIMALS) // Number of ETH to convert to WETH
+    console.log('DEX: WETHDeficit is: ', WETHDeficit)    
+    const convertEthTxHash = await zeroEx.etherToken.depositAsync(WETH_CONTRACT_ADDRESS, ethToConvert, takerAddress)
+    console.log('DEX: convertEthTxHash is: ',  convertEthTxHash)    
+    await zeroEx.awaitTransactionMinedAsync(convertEthTxHash)
+  }
+
+  // check WETH allowance
+  const allowanceAmount = await zeroEx.token.getProxyAllowanceAsync(WETH_CONTRACT_ADDRESS, takerAddress)
+  console.log('DEX: allowanceAmount is: ',  allowanceAmount)    
+  const orderBigNumberTakerTokenAmount = convertBiggystringToNativeBigNumber(order.takerTokenAmount, DECIMALS, 8)
+  console.log('DEX: orderBigNumberAmount is: ', orderBigNumberTakerTokenAmount)
+  const stringifiedAllowanceAmount = allowanceAmount.toString()
+  if (bns.lt(stringifiedAllowanceAmount, order.takerTokenAmount )) {
+    console.log('DEX: WETH allowance not high enough, setting unlimited proxy allowance')
+    const setMakerAllowTxHash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(WETH_CONTRACT_ADDRESS, takerAddress)
+    console.log('DEX: increase setMakerAllowTxHash: ', setMakerAllowTxHash)
+    await zeroEx.awaitTransactionMinedAsync(setMakerAllowTxHash)    
+  }
+  const orderHash = ZeroEx.getOrderHashHex(order)
+  console.log('DEX: orderHash is: ', orderHash)
+  // Signing orderHash -> ecSignature
+  const shouldAddPersonalMessagePrefix = false
+  const ecSignature = await zeroEx.signOrderHashAsync(orderHash, takerAddress, shouldAddPersonalMessagePrefix)
+  console.log('DEX: ecSignature is: ', ecSignature)
+
+  const signedOrder = {
+    ...order,
+    ecSignature,
+  }  
+
+  // Verify that order is fillable
+  await zeroEx.exchange.validateOrderFillableOrThrowAsync(signedOrder)
+
+  // Try to fill order
+  const shouldThrowOnInsufficientBalanceOrAllowance = true
+
+  const fillTxHash = await zeroEx.exchange.fillOrderAsync(
+    signedOrder,
+    ZeroEx.toBaseUnitAmount(orderBigNumberTakerTokenAmount, DECIMALS),
+    shouldThrowOnInsufficientBalanceOrAllowance,
+    takerAddress
+  )
+  console.log('DEX: fillTxHash is: ', fillTxHash);
+  const txReceipt = await zeroEx.awaitTransactionMinedAsync(fillTxHash)
+  console.log('DEX: order fulfillment transaction completed!, txReceipt is: ', txReceipt)
 }

@@ -79,6 +79,6 @@ export class CreateDexSellTokenOrderComponent extends Component<Props, State> {
   }
 
   _onNext = () => {
-    console.log('submission executing')
+    console.log('DEX: submission executing')
   }
 }

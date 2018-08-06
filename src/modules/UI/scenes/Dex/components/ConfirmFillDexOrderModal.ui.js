@@ -31,8 +31,13 @@ export type ConfirmFillDexOrderModalDispatchProps = {
 export type ConfirmFillDexOrderModalProps = ConfirmFillDexOrderModalOwnProps & ConfirmFillDexOrderModalStateProps & ConfirmFillDexOrderModalDispatchProps
 
 export class ConfirmFillDexOrderModalComponent extends Component<ConfirmFillDexOrderModalProps> {
-  _onCancel = () => {
+  _onSubmit = () => {
+    console.log('DEX: Submit pressed')
     this.props.fillDEXOrder()
+  }
+
+  _onCancel = () => {
+    console.log('DEX: Cancel pressed')
   }
 
   render () {

@@ -8,12 +8,20 @@ import styles, { styles as stylesRaw } from '../style.js'
 
 export class OrderBookResultComponent extends Component<OrderBookResultOwnProps, State> {
 
-  showConfirmFillDexOrderModal = (formattedOrder: FormattedDEXOrderInfo) => {
-    this.props.showConfirmFillDexOrderModal(formattedOrder)
+  showConfirmFillDexOrderModal = (formattedOrder) => {
+    const { order} = this.props
+    this.props.showConfirmFillDexOrderModal(order, formattedOrder)
   }
 
   render () {
-    const { makerNativeTokenAmount, takerNativeTokenAmount, exchangeRate, expiration, currencyCode } = this.props
+    const {
+      makerNativeTokenAmount,
+      takerNativeTokenAmount,
+      exchangeRate,
+      expiration,
+      currencyCode,
+      order,
+    } = this.props
 
     // warning, the formattedOrder variable CANNOT be submitted as the signed data to fill an order, this will NOT work
     const formattedOrder = {

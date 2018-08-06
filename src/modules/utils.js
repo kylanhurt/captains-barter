@@ -1,6 +1,7 @@
 // @flow
 
 import { bns, div, eq, gte, mul, toFixed } from 'biggystring'
+import { BigNumber } from '@0xproject/utils'
 import type {
   EdgeCurrencyInfo,
   EdgeCurrencyPlugin,
@@ -591,6 +592,13 @@ export function getObjectDiff (obj1: Object, obj2: Object, traverseObjects?: Obj
     }
   }
   return ''
+}
+
+export const convertBiggystringToNativeBigNumber = (amount: string, decimal: number, precision: number) => {
+  const decimalString = decimal.toString()
+  const multiplier = '1' + '0'.repeat(decimalString)
+  const nativeAmount = bns.div(amount, multiplier, precision)
+  return new BigNumber(nativeAmount)
 }
 
 export function snooze (ms: number): Promise<void> {
