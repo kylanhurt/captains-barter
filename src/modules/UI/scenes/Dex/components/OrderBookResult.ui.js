@@ -17,7 +17,7 @@ export class OrderBookResultComponent extends Component<OrderBookResultOwnProps,
     const {
       makerNativeTokenAmount,
       takerNativeTokenAmount,
-      exchangeRate,
+      exchangeRateSyntax,
       expiration,
       currencyCode,
       order,
@@ -28,7 +28,7 @@ export class OrderBookResultComponent extends Component<OrderBookResultOwnProps,
       makerNativeTokenAmount,
       currencyCode,
       takerNativeTokenAmount,
-      exchangeRate,
+      exchangeRateSyntax,
       expiration
     }
     return (
@@ -36,7 +36,7 @@ export class OrderBookResultComponent extends Component<OrderBookResultOwnProps,
         <TouchableHighlight onPress={() => this.showConfirmFillDexOrderModal(formattedOrder)} style={[styles.singleTokenType]} underlayColor={stylesRaw.underlayColor.color}>
           <View style={styles.orderBookResultInfo}>
             <View style={styles.orderBookResultAmountsArea}>
-              <Text style={styles.orderBookResultAmountsText}>{`${makerNativeTokenAmount} ${currencyCode} / ${takerNativeTokenAmount} WETH = ${exchangeRate}`} </Text>
+              <Text style={styles.orderBookResultAmountsText}>{`${makerNativeTokenAmount} ${currencyCode} / ${takerNativeTokenAmount} WETH = ${exchangeRateSyntax}`} </Text>
             </View>
             <View style={styles.orderBookResultExpirationArea}>
               <Text style={styles.orderBookResultExpirationText}>{s.strings.dex_order_book_result_expiration} {expiration}</Text>

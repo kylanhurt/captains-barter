@@ -3,6 +3,7 @@
 import { connect } from 'react-redux'
 import type { Dispatch, State } from '../../../../ReduxTypes.js'
 import { bns } from 'biggystring'
+import { ZeroEx } from '0x.js'
 import {
   getCurrencyAccountFiatBalanceFromWallet,
   getCryptoBalanceInfoFromWallet,
@@ -26,12 +27,11 @@ export const mapStateToProps = (state: State, ownProps) => {
   const tokenInfo = state.ui.scenes.dex.tokenDirectory.find(item => ownProps.currencyCode)
   const decimal = tokenInfo.decimal
   const order = ownProps.data.item
-  const makerTokenAmount = order.makerTokenAmount
   const tokenMultiplier = 1 + '0'.repeat(decimal)
-  const makerNativeTokenAmount = bns.div(makerTokenAmount, tokenMultiplier, 12)
-  const takerTokenAmount = order.takerTokenAmount
-  const takerNativeTokenAmount = bns.div(takerTokenAmount, WETH_MULTIPLIER, 12)
-  const exchangeRate = bns.div(makerNativeTokenAmount, takerNativeTokenAmount, 8, 10)
+  const makerNativeTokenAmount = ZeroEx.toUnitAmount(order.makerTokenAmount, 12)
+  const takerNativeTokenAmount = ZeroEx.toUnitAmount(order.takerTokenAmount, 12)
+  const exchangeRate = makerNativeTokenAmount.div(takerNativeTokenAmount)
+  const exchangeRateSyntax = exchangeRate.round(6).toString()
   const currentUnixTimestamp = Date.now()
   const expirationUnixTimestampSec = parseInt(order.expirationUnixTimestampSec)
   const timeDifference = expirationUnixTimestampSec / 1000 - currentUnixTimestamp / 1000
@@ -42,7 +42,7 @@ export const mapStateToProps = (state: State, ownProps) => {
     makerNativeTokenAmount,
     takerNativeTokenAmount,
     expiration,
-    exchangeRate,
+    exchangeRateSyntax,
     order
   }
 }
