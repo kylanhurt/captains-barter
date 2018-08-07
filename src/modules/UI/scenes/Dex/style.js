@@ -92,6 +92,7 @@ export const styles = {
 
   },
   buyButton: {
+    width: '60%',
     flex: 1,
     backgroundColor: THEME.COLORS.SECONDARY,
     borderRadius: 12,
@@ -104,6 +105,7 @@ export const styles = {
     color: THEME.COLORS.WHITE
   },
   browseOrderBookButton: {
+    width: '60%',    
     flex: 1,
     borderRadius: 12,
     paddingHorizontal: 48

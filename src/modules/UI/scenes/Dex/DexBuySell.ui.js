@@ -30,15 +30,10 @@ export class DexBuySell extends Component<Props, State> {
                 <Text style={{textAlign: 'center', fontSize: 24, color: rawStyle.buyButtonText.color}}>{s.strings.dex_buy_tokens_button_title}</Text>
               </PrimaryButton>
             </View>
-            <View>
+            <View style={[styles.buySellButtonsArea]}>
               <SecondaryButton style={styles.browseOrderBookButton} onPress={this._onPressBrowseOrderBook}>
                 <Text style={{textAlign: 'center', fontSize: 24, color: rawStyle.browseButtonText.color}}>{s.strings.dex_browse_button_title}</Text>
               </SecondaryButton>
-            </View>
-            <View style={[styles.buySellButtonsArea]}>
-              <TertiaryButton style={styles.sellButton} onPress={this._onPressSell}>
-                <Text style={{textAlign: 'center', fontSize: 24, color: rawStyle.sellButtonText.color}}>{s.strings.dex_sell_tokens_button_title}</Text>
-              </TertiaryButton>
             </View>
           </ScrollView>
         </View>
