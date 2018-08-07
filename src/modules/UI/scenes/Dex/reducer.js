@@ -6,7 +6,7 @@ import {
   DEX_ORDER_BOOK_ASKS,
   DEX_CREATE_BUY_ORDER_PROCESSING,
   CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE,
-  CONFIRM_FILL_DEX_ORDER_PROCESSING
+  DEX_CONFIRM_FILL_ORDER_PROCESSING
 } from './action.js'
 import { combineReducers } from 'redux'
 import type { DirectoryTokenInfo, DEXOrder, FormattedDEXOrderInfo } from '../../../../types.js'
@@ -59,7 +59,7 @@ export const isConfirmFillDexOrderModalVisible = (state: boolean = false, action
 
 export const isConfirmFillDexOrderSubmitProcessing = (state: boolean = false, action: Action) => {
   switch (action.type) {
-    case CONFIRM_FILL_DEX_ORDER_PROCESSING:
+    case DEX_CONFIRM_FILL_ORDER_PROCESSING:
       return action.data.isConfirmFillDexOrderSubmitProcessing
     default:
       return state

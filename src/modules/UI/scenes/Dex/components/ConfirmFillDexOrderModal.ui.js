@@ -66,7 +66,7 @@ export class ConfirmFillDexOrderModalComponent extends Component<ConfirmFillDexO
           <InteractiveModal.Row>
             <InteractiveModal.Item>
               <PrimaryButton onPress={this._onSubmit} disabled={isConfirmFillDexOrderSubmitProcessing} style={styles.confirmFillDexOrderModalSubmitButton}>
-                {isConfirmFillDexOrderSubmitProcessing ? <ActivityIndicator /> : <TertiaryButton.Text style={styles.confirmFillDexOrderModalSubmitButtonText}>{s.strings.dex_submit_confirm_dex_order}</TertiaryButton.Text>}
+                {isConfirmFillDexOrderSubmitProcessing ? <ActivityIndicator size={'small'} /> : <TertiaryButton.Text style={styles.confirmFillDexOrderModalSubmitButtonText}>{s.strings.dex_submit_confirm_dex_order}</TertiaryButton.Text>}
               </PrimaryButton>
               <SecondaryButton onPress={this._onCancel} disabled={isConfirmFillDexOrderSubmitProcessing}>
                 <SecondaryButton.Text style={styles.confirmFillDexOrderPrimaryButtonText}>{s.strings.string_cancel_cap}</SecondaryButton.Text>

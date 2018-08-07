@@ -22,6 +22,7 @@ export const DEX_ORDER_BOOK_ASKS = 'DEX_ORDER_BOOK_ASKS'
 export const CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE = 'CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE'
 export const CONFIRM_FILL_DEX_ORDER_PROCESSING = 'CONFIRM_FILL_DEX_ORDER_PROCESSING'
 export const DEX_CREATE_BUY_ORDER_PROCESSING = 'DEX_CREATE_BUY_ORDER_PROCESSING'
+export const DEX_CONFIRM_FILL_ORDER_PROCESSING = 'DEX_CONFIRM_FILL_ORDER_PROCESSING'
 
 const NETWORK_ID = 1
 
@@ -239,74 +240,95 @@ export const hideConfirmFillDexOrderModal = () => (dispatch: Dispatch) => {
   const isConfirmFillDexOrderModalVisible = false
   dispatch({
     type: CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE,
-    data: { isConfirmFillDexOrderModalVisible }
+    data: {
+      order: null,
+      formattedOrderInfo: null,
+      isConfirmFillDexOrderModalVisible
+    }
   })
 }
 
 export const fillDEXOrder = () => async (dispatch: Dispatch, getState: GetState) => {
-  const state = getState()
-  const order = state.ui.scenes.dex.selectedDEXOrderToFill
-  const selectedWallet = getSelectedWallet(state)
-  const selectedWalletId = selectedWallet.id
-  const takerAddress = selectedWallet.receiveAddress.publicAddress // this is the current user's address (filler)
-  let web3Engine = providers[selectedWalletId]
-  if (!web3Engine) web3Engine = startWeb3Engine(selectedWalletId, state)
-  const zeroEx = new ZeroEx(providers[selectedWalletId], configs)
-  const web3Wrapper = new Web3Wrapper(web3Engine)
-  const WETH_CONTRACT_ADDRESS = zeroEx.etherToken.getContractAddressIfExists() // The wrapped ETH token contract  
+  dispatch(updateConfirmFillDexOrderSubmitProcessing(true))
+  try {
+    const state = getState()
+    const order = state.ui.scenes.dex.selectedDEXOrderToFill
+    const selectedWallet = getSelectedWallet(state)
+    const selectedWalletId = selectedWallet.id
+    const takerAddress = selectedWallet.receiveAddress.publicAddress // this is the current user's address (filler)
+    let web3Engine = providers[selectedWalletId]
+    if (!web3Engine) web3Engine = startWeb3Engine(selectedWalletId, state)
+    const zeroEx = new ZeroEx(providers[selectedWalletId], configs)
+    const web3Wrapper = new Web3Wrapper(web3Engine)
+    const WETH_CONTRACT_ADDRESS = zeroEx.etherToken.getContractAddressIfExists() // The wrapped ETH token contract  
 
-  // check to see if there's enough WETH to fill the order
-  const WETHBalance = selectedWallet.nativeBalances['WETH']
-  const WETHBalanceBigNumber = new BigNumber(WETHBalance)
-  const WETHBalanceUnitAmount = ZeroEx.toUnitAmount(WETHBalanceBigNumber, DECIMALS)
-  const WETHOrderAmount = order.takerTokenAmount
-  const WETHOrderUnitAmount = ZeroEx.toUnitAmount(WETHOrderAmount, DECIMALS)
+    // check to see if there's enough WETH to fill the order
+    const WETHBalance = selectedWallet.nativeBalances['WETH']
+    const WETHBalanceBigNumber = new BigNumber(WETHBalance)
+    const WETHBalanceUnitAmount = ZeroEx.toUnitAmount(WETHBalanceBigNumber, DECIMALS)
+    const WETHOrderAmount = order.takerTokenAmount
+    const WETHOrderUnitAmount = ZeroEx.toUnitAmount(WETHOrderAmount, DECIMALS)
 
-  // if there isn't enough WETH balance to fund the fulfillment then do am ETH -> WETH conversion routine
-  if (WETHOrderUnitAmount.gt(WETHBalanceUnitAmount)) {
-    console.log('DEX: convert ETH to WETH')
-    // const WETH_DECIMAL_STRING = DECIMALS.toString()
-    // const WETH_MULTIPLIER = 1 + '0'.repeat(WETH_DECIMAL_STRING)
-    const WETHDeficit =  WETHOrderUnitAmount.sub(WETHBalanceUnitAmount)
-    console.log('DEX: WETHDeficit is: ', WETHDeficit)    
-    const convertEthTxHash = await zeroEx.etherToken.depositAsync(WETH_CONTRACT_ADDRESS, WETHDeficit, takerAddress)
-    console.log('DEX: convertEthTxHash is: ',  convertEthTxHash)    
-    await zeroEx.awaitTransactionMinedAsync(convertEthTxHash)
+    // if there isn't enough WETH balance to fund the fulfillment then do am ETH -> WETH conversion routine
+    if (WETHOrderUnitAmount.gt(WETHBalanceUnitAmount)) {
+      console.log('DEX: convert ETH to WETH')
+      // const WETH_DECIMAL_STRING = DECIMALS.toString()
+      // const WETH_MULTIPLIER = 1 + '0'.repeat(WETH_DECIMAL_STRING)
+      const WETHDeficit =  WETHOrderUnitAmount.sub(WETHBalanceUnitAmount)
+      console.log('DEX: WETHDeficit is: ', WETHDeficit)    
+      const convertEthTxHash = await zeroEx.etherToken.depositAsync(WETH_CONTRACT_ADDRESS, WETHDeficit, takerAddress)
+      console.log('DEX: convertEthTxHash is: ',  convertEthTxHash)    
+      await zeroEx.awaitTransactionMinedAsync(convertEthTxHash)
+    }
+
+    // check WETH allowance
+    const allowanceAmount = await zeroEx.token.getProxyAllowanceAsync(WETH_CONTRACT_ADDRESS, takerAddress)
+    console.log('DEX: allowanceAmount is: ',  allowanceAmount)    
+    if (allowanceAmount.lt(order.takerTokenAmount)) {
+      console.log('DEX: WETH allowance not high enough, setting unlimited proxy allowance')
+      const setMakerAllowTxHash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(WETH_CONTRACT_ADDRESS, takerAddress)
+      console.log('DEX: increase setMakerAllowTxHash: ', setMakerAllowTxHash)
+      await zeroEx.awaitTransactionMinedAsync(setMakerAllowTxHash)    
+    }
+    const orderHash = ZeroEx.getOrderHashHex(order)
+    console.log('DEX: orderHash is: ', orderHash)
+    // Signing orderHash -> ecSignature
+    const shouldAddPersonalMessagePrefix = false
+    const ecSignature = await zeroEx.signOrderHashAsync(orderHash, takerAddress, shouldAddPersonalMessagePrefix)
+    console.log('DEX: ecSignature is: ', ecSignature)
+
+    const signedOrder = {
+      ...order
+    }  
+
+    // Verify that order is fillable
+    await zeroEx.exchange.validateOrderFillableOrThrowAsync(signedOrder)
+
+    // Try to fill order
+    const shouldThrowOnInsufficientBalanceOrAllowance = true
+    console.log('DEX: about to fill order')
+    const fillTxHash = await zeroEx.exchange.fillOrderAsync(
+      signedOrder,
+      order.takerTokenAmount,
+      shouldThrowOnInsufficientBalanceOrAllowance,
+      takerAddress
+    )
+    console.log('DEX: fillTxHash is: ', fillTxHash);
+    const txReceipt = await zeroEx.awaitTransactionMinedAsync(fillTxHash)
+    console.log('DEX: order fulfillment transaction completed!, txReceipt is: ', txReceipt)
+    Alert.alert('Trade Broadcasted', 'Filling of this order has been broadcasted to the network and should be reflected in your wallet balances momentarily.')
+
   }
-
-  // check WETH allowance
-  const allowanceAmount = await zeroEx.token.getProxyAllowanceAsync(WETH_CONTRACT_ADDRESS, takerAddress)
-  console.log('DEX: allowanceAmount is: ',  allowanceAmount)    
-  if (allowanceAmount.lt(order.takerTokenAmount)) {
-    console.log('DEX: WETH allowance not high enough, setting unlimited proxy allowance')
-    const setMakerAllowTxHash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(WETH_CONTRACT_ADDRESS, takerAddress)
-    console.log('DEX: increase setMakerAllowTxHash: ', setMakerAllowTxHash)
-    await zeroEx.awaitTransactionMinedAsync(setMakerAllowTxHash)    
+  catch (e) {
+    console.log('DEX Order Fill error', e)
   }
-  const orderHash = ZeroEx.getOrderHashHex(order)
-  console.log('DEX: orderHash is: ', orderHash)
-  // Signing orderHash -> ecSignature
-  const shouldAddPersonalMessagePrefix = false
-  const ecSignature = await zeroEx.signOrderHashAsync(orderHash, takerAddress, shouldAddPersonalMessagePrefix)
-  console.log('DEX: ecSignature is: ', ecSignature)
+  dispatch(updateConfirmFillDexOrderSubmitProcessing(false))
+  dispatch(hideConfirmFillDexOrderModal())  
+}
 
-  const signedOrder = {
-    ...order
-  }  
-
-  // Verify that order is fillable
-  await zeroEx.exchange.validateOrderFillableOrThrowAsync(signedOrder)
-
-  // Try to fill order
-  const shouldThrowOnInsufficientBalanceOrAllowance = true
-  console.log('DEX: about to fill order')
-  const fillTxHash = await zeroEx.exchange.fillOrderAsync(
-    signedOrder,
-    order.takerTokenAmount,
-    shouldThrowOnInsufficientBalanceOrAllowance,
-    takerAddress
-  )
-  console.log('DEX: fillTxHash is: ', fillTxHash);
-  const txReceipt = await zeroEx.awaitTransactionMinedAsync(fillTxHash)
-  console.log('DEX: order fulfillment transaction completed!, txReceipt is: ', txReceipt)
+export const updateConfirmFillDexOrderSubmitProcessing = (isConfirmFillDexOrderSubmitProcessing: boolean) => {
+  return {
+    type: DEX_CONFIRM_FILL_ORDER_PROCESSING,
+    data: { isConfirmFillDexOrderSubmitProcessing }
+  }
 }
