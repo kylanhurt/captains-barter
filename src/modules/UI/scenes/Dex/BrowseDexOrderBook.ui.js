@@ -11,7 +11,7 @@ import SearchResults from '../../components/SearchResults'
 import OrderBookResult from './components/OrderBookResultConnector.js'
 import { TertiaryButton } from '../../components/Modals/components/TertiaryButton.ui.js'
 import Text from '../../components/FormattedText'
-import { Gradient } from '../../components/Gradient/Gradient.ui.js'
+import Gradient from '../../components/Gradient/Gradient.ui.js'
 import SafeAreaView from '../../components/SafeAreaView'
 import styles from './style.js'
 import { ConfirmFillDexOrderModalConnector as ConfirmFillDexOrderModal} from './components/ConfirmFillDexOrderModalConnector.js'
@@ -91,6 +91,7 @@ export class BrowseDexOrderBookComponent extends Component<BrowseDexOrderBookPro
     return (
       <SafeAreaView>
         <View style={[styles.scene]}>
+          <Gradient style={styles.gradient} />                
           <View style={styles.container}>
             <View style={styles.instructionalArea}>
               <Text style={styles.instructionalText}>{s.strings.dex_browse_order_book_instructions}</Text>

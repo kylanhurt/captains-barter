@@ -476,35 +476,35 @@ export default class Main extends Component<Props, State> {
                       <Stack key={Constants.DEX}>
                         <Scene
                           key={Constants.DEX_BUY_SELL}
-                          navTransparent={false}
+                          navTransparent={true}
                           component={DexBuySellConnector}
                           renderTitle={this.renderTitle(DEX_BUY_SELL)}
                           renderLeftButton={this.renderBackButton()}
                         />
                         <Scene
                           key={Constants.CREATE_DEX_BUY_TOKEN_ORDER}
-                          navTransparent={false}
+                          navTransparent={true}
                           component={CreateDexBuyTokenOrderConnector}
                           renderTitle={this.renderTitle(CREATE_DEX_ORDER)}
                           renderLeftButton={this.renderBackButton()}
                         />
                         <Scene
                           key={Constants.BROWSE_DEX_ORDER_BOOK}
-                          navTransparent={false}
+                          navTransparent={true}
                           component={BrowseDexOrderBookConnector}
                           renderTitle={this.renderTitle(BROWSE_DEX_ORDER_BOOK)}
                           renderLeftButton={this.renderBackButton()}
                         />
                         <Scene
                           key={Constants.CREATE_DEX_SELECT_TOKEN}
-                          navTransparent={false}
+                          navTransparent={true}
                           component={CreateDexSelectTokenConnector}
                           renderTitle={this.renderTitle(CREATE_DEX_SELECT_TOKEN)}
                           renderLeftButton={this.renderBackButton()}
                         />
                         <Scene
                           key={Constants.CREATE_DEX_SELL_TOKEN_ORDER}
-                          navTransparent={false}
+                          navTransparent={true}
                           component={CreateDexSellTokenOrderConnector}
                           renderTitle={this.renderTitle(CREATE_DEX_ORDER)}
                           renderLeftButton={this.renderBackButton()}

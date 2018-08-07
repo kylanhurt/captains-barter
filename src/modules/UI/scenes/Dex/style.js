@@ -13,20 +13,17 @@ export const styles = {
   },
   gradient: {
     height: THEME.HEADER,
-    width: '100%',
-    position: 'absolute'
-  },
-  view: {
-    position: 'relative',
-    top: THEME.HEADER,
-    paddingHorizontal: 20,
-    paddingVertical: 5
+    width: '100%'
   },
   container: {
     position: 'relative',
-    height: PLATFORM.deviceHeight - 66,
     paddingHorizontal: 20,
     backgroundColor: THEME.COLORS.GRAY_4
+  },  
+  view: {
+    position: 'relative',
+    paddingHorizontal: 20,
+    paddingVertical: 5
   },
   leftArea: {
     flexDirection: 'row'
@@ -156,7 +153,6 @@ export const styles = {
     color: THEME.COLORS.GRAY_1,
     textAlignVertical: 'center'
   },
-
   searchContainer: {
     position: 'relative',
     backgroundColor: THEME.COLORS.TRANSPARENT,
@@ -165,14 +161,14 @@ export const styles = {
     width: '100%'
   },
   orderBookResultsScrollView: {
-    height: 600
   },
   orderBookResultsContainer: {
     position: 'relative',
     backgroundColor: THEME.COLORS.TRANSPARENT,
     borderBottomWidth: 1,
     borderBottomColor: THEME.COLORS.GRAY_3,
-    width: '100%'
+    width: '100%',
+    height: 400,
   },
   orderBookResultInfo: {
     flexDirection: 'column',
