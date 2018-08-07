@@ -108,11 +108,11 @@ export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, e
     takerTokenAddress: WETH_CONTRACT_ADDRESS, // The token address the Maker is requesting from the Taker.
     exchangeContractAddress: EXCHANGE_CONTRACT_ADDRESS, // The exchange.sol address.
     salt: ZeroEx.generatePseudoRandomSalt(), // Random number to make the order (and therefore its hash) unique.
-    makerFee: ZeroEx.toBaseUnitAmount(new BigNumber(.01), DECIMALS), // How many ZRX the Maker will pay as a fee to the Relayer.
-    takerFee: ZeroEx.toBaseUnitAmount(new BigNumber(0), DECIMALS), // How many ZRX the Taker will pay as a fee to the Relayer.
+    // makerFee: ZeroEx.toBaseUnitAmount(new BigNumber(.01), DECIMALS), // How many ZRX the Maker will pay as a fee to the Relayer.
+    // takerFee: ZeroEx.toBaseUnitAmount(new BigNumber(.000025), DECIMALS), // How many ZRX the Taker will pay as a fee to the Relayer.
     makerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(1), DECIMALS), // Base 18 decimals, The amount of ZRX token the Maker is offering.
     takerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(0.0025), DECIMALS), // Base 18 decimals, The amount of WETH token the Maker is requesting from the Taker.
-    expirationUnixTimestampSec: new BigNumber(Date.now() + 28800000), // When will the order expire (in unix time), Valid for up to 8 hours
+    expirationUnixTimestampSec: new BigNumber(Date.now() + 28800001), // When will the order expire (in unix time), Valid for up to 8 hours
   }
 
     // Submit order to relayer
@@ -266,15 +266,16 @@ export const fillDEXOrder = () => async (dispatch: Dispatch, getState: GetState)
   // check to see if there's enough WETH to fill the order
   const WETHBalance = selectedWallet.nativeBalances['WETH']
   const WETHBalanceBigNumber = new BigNumber(WETHBalance)
-  const WETHUnitAmount = ZeroEx.toUnitAmount(WETHBalanceBigNumber, DECIMALS)
+  const WETHBalanceUnitAmount = ZeroEx.toUnitAmount(WETHBalanceBigNumber, DECIMALS)
   const WETHOrderAmount = order.takerTokenAmount
+  const WETHOrderUnitAmount = ZeroEx.toUnitAmount(WETHOrderAmount, DECIMALS)
 
   // if there isn't enough WETH balance to fund the fulfillment then do am ETH -> WETH conversion routine
-  if (WETHOrderAmount.gt(WETHUnitAmount)) {
+  if (WETHOrderUnitAmount.gt(WETHBalanceUnitAmount)) {
     console.log('DEX: convert ETH to WETH')
     // const WETH_DECIMAL_STRING = DECIMALS.toString()
     // const WETH_MULTIPLIER = 1 + '0'.repeat(WETH_DECIMAL_STRING)
-    const WETHDeficit =  WETHOrderAmount.sub(WETHUnitAmount)
+    const WETHDeficit =  WETHOrderUnitAmount.sub(WETHBalanceUnitAmount)
     console.log('DEX: WETHDeficit is: ', WETHDeficit)    
     const convertEthTxHash = await zeroEx.etherToken.depositAsync(WETH_CONTRACT_ADDRESS, WETHDeficit, takerAddress)
     console.log('DEX: convertEthTxHash is: ',  convertEthTxHash)    
@@ -298,19 +299,19 @@ export const fillDEXOrder = () => async (dispatch: Dispatch, getState: GetState)
   console.log('DEX: ecSignature is: ', ecSignature)
 
   const signedOrder = {
-    ...order,
-    ecSignature,
+    ...order
   }  
 
   // Verify that order is fillable
   await zeroEx.exchange.validateOrderFillableOrThrowAsync(signedOrder)
 
   // Try to fill order
+  const shouldThrowOnInsufficientBalanceOrAllowance = true
   console.log('DEX: about to fill order')
   const fillTxHash = await zeroEx.exchange.fillOrderAsync(
     signedOrder,
     order.takerTokenAmount,
-    true,
+    shouldThrowOnInsufficientBalanceOrAllowance,
     takerAddress
   )
   console.log('DEX: fillTxHash is: ', fillTxHash);
