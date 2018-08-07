@@ -26,6 +26,7 @@ export const mapStateToProps = (state: State) => {
   const fiatBalance = getCurrencyAccountFiatBalanceFromWallet(wallet, currencyCode, state)
   const settings = state.ui.settings
   const fiatSymbol = settings.defaultFiat ? getFiatSymbol(settings.defaultFiat) : ''
+  const isCreateDexBuyTokenOrderProcessing = state.ui.scenes.dex.isCreateDexBuyTokenOrderProcessing
   return {
     selectedWalletId,
     wallet,
@@ -35,7 +36,8 @@ export const mapStateToProps = (state: State) => {
     symbol,
     receiveAddress,
     fiatBalance,
-    fiatSymbol
+    fiatSymbol,
+    isCreateDexBuyTokenOrderProcessing
   }
 }
 

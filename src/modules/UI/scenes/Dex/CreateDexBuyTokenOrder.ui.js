@@ -2,14 +2,14 @@
 
 import React, { Component } from 'react'
 import { Actions } from 'react-native-router-flux'
-import { ScrollView, View } from 'react-native'
+import { ScrollView, View, ActivityIndicator } from 'react-native'
 import type { GuiWallet } from '../../../../types.js'
 import { intl } from '../../../../locales/intl'
 import { FormField } from '../../../../components/FormField.js'
 import { TertiaryButton } from '../../components/Modals/components/TertiaryButton.ui.js'
 import { CREATE_DEX_SELECT_TOKEN } from '../../../../constants/SceneKeys.js'
 import s from '../../../../locales/strings.js'
-import { PrimaryButton } from '../../components/Buttons'
+import { PrimaryButton } from '../../components/Modals/components/PrimaryButton.ui.js'
 import Text from '../../components/FormattedText'
 import { Gradient } from '../../components/Gradient/Gradient.ui.js'
 import SafeAreaView from '../../components/SafeAreaView'
@@ -28,12 +28,16 @@ export type CreateDexBuyTokenOrderOwnProps = {
   fiatBalance: string
 }
 
+export type CreateDexBuyTokenOrderStateProps = {
+  isCreateDexBuyTokenOrderProcessing: boolean  
+}
+
 export type CreateDexBuyTokenOrderDispatchProps = {
   getTokenList: () => void,
   submitDexBuyTokenOrder: () => void,
 }
 
-export type CreateDexBuyTokenOrderProps = CreateDexBuyTokenOrderOwnProps & CreateDexBuyTokenOrderDispatchProps
+export type CreateDexBuyTokenOrderProps = CreateDexBuyTokenOrderOwnProps & CreateDexBuyTokenOrderDispatchProps & CreateDexBuyTokenOrderStateProps
 
 export type CreateDexBuyTokenOrderState = {
   tokenCode: string,
@@ -100,6 +104,7 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
   }
 
   render () {
+    const { isCreateDexBuyTokenOrderProcessing } = this.props
     return (
       <SafeAreaView>
         <View style={[styles.scene]}>
@@ -139,11 +144,13 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
               </View>
             </View>
             <View style={[styles.buttonsArea]}>
-              <PrimaryButton
-                text={s.strings.dex_submit_order_button_title}
-                style={styles.submitButton}
-                onPressFunction={this._onSubmit}
-              />
+              <PrimaryButton style={styles.submitButton} onPress={this._onSubmit}>
+                {isCreateDexBuyTokenOrderProcessing ? (
+                  <ActivityIndicator size={'small'} />
+                 ) : (
+                 <PrimaryButton.Text>{s.strings.dex_submit_order_button_title}</PrimaryButton.Text>
+                 )}
+              </PrimaryButton>
             </View>
             <View style={styles.bottomPaddingForKeyboard} />
           </ScrollView>

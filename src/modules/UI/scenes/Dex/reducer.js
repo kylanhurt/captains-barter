@@ -4,6 +4,7 @@ import {
   UPDATE_TOKEN_LIST,
   DEX_ORDER_BOOK_BIDS,
   DEX_ORDER_BOOK_ASKS,
+  DEX_CREATE_BUY_ORDER_PROCESSING,
   CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE,
   CONFIRM_FILL_DEX_ORDER_PROCESSING
 } from './action.js'
@@ -33,6 +34,15 @@ export const orderBookAsks = (state: Array<any> = [], action: Action) => {
   switch (action.type) {
     case DEX_ORDER_BOOK_ASKS:
       return action.data.orderBookAsks
+    default:
+      return state
+  }
+}
+
+export const isCreateDexBuyTokenOrderProcessing = (state: boolean = false, action: Action) => {
+  switch (action.type) {
+    case DEX_CREATE_BUY_ORDER_PROCESSING:
+      return action.data.isCreateDexBuyTokenOrderProcessing
     default:
       return state
   }
@@ -77,6 +87,7 @@ export const dex = combineReducers({
   tokenDirectory,
   orderBookBids,
   orderBookAsks,
+  isCreateDexBuyTokenOrderProcessing,
   isConfirmFillDexOrderModalVisible,
   isConfirmFillDexOrderSubmitProcessing,
   selectedDEXOrderToFill,
