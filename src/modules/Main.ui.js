@@ -50,7 +50,6 @@ import CreateDexBuyTokenOrderConnector from './UI/scenes/Dex/CreateDexBuyTokenOr
 import BrowseDexOrderBookConnector from './UI/scenes/Dex/BrowseDexOrderBookConnector.js'
 import CreateDexSellTokenOrderConnector from './UI/scenes/Dex/CreateDexSellTokenOrderConnector.js'
 import { CreateDexSelectTokenConnector } from './UI/scenes/Dex/CreateDexSelectTokenConnector.js'
-import TransactionsExportSceneConnector from '../connectors/scene/TransactionsExportSceneConnector'
 import EdgeLoginSceneConnector from '../connectors/scene/EdgeLoginSceneConnector'
 import OtpSettingsSceneConnector from '../connectors/scene/OtpSettingsSceneConnector.js'
 import PasswordRecoveryConnector from '../connectors/scene/PasswordRecoveryConnector.js'

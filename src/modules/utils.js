@@ -19,7 +19,6 @@ import { intl } from '../locales/intl.js'
 import { FIAT_CODES_SYMBOLS as currencySymbolMap, getSymbolFromCurrency } from '../constants/indexConstants.js'
 import borderColors from '../theme/variables/css3Colors'
 import type { CustomTokenInfo, ExchangeData, GuiDenomination, GuiWallet, CryptoBalanceInfo } from '../types'
-import type { State } from './ReduxTypes.js'
 
 const DIVIDE_PRECISION = 18
 
