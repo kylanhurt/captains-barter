@@ -6,6 +6,7 @@ import { Platform } from 'react-native'
 import Locale from 'react-native-locale'
 import PushNotification from 'react-native-push-notification'
 import { Actions } from 'react-native-router-flux'
+import { sprintf } from 'sprintf-js'
 
 import * as actions from '../../actions/indexActions'
 import * as Constants from '../../constants/indexConstants'
@@ -19,7 +20,6 @@ import { updateWalletsRequest } from '../Core/Wallets/action.js'
 import type { Dispatch, GetState } from '../ReduxTypes'
 import { insertWalletIdsForProgress } from '../UI/Wallets/action.js'
 import { getReceiveAddresses } from '../utils.js'
-import { sprintf } from 'sprintf-js'
 
 const localeInfo = Locale.constants() // should likely be moved to login system and inserted into Redux
 
@@ -51,8 +51,8 @@ export const initializeAccount = (account: EdgeAccount, touchIdInfo: Object) => 
   }
   const accountInitObject = {
     account: account,
+    showOnBoarding: false,
     touchIdInfo: touchIdInfo,
-    loginStatus: true,
     walletId: '',
     currencyCode: '',
     currencyPlugins: [],
@@ -71,7 +71,9 @@ export const initializeAccount = (account: EdgeAccount, touchIdInfo: Object) => 
     archivedWalletIds: [],
     currencyWallets: {},
     passwordReminder: {},
-    isAccountBalanceVisible: false
+    isAccountBalanceVisible: false,
+    isWalletFiatBalanceVisible: false,
+    spendingLimits: {}
   }
   try {
     const currencyPlugins = await CONTEXT_API.getCurrencyPlugins(context)
@@ -85,6 +87,9 @@ export const initializeAccount = (account: EdgeAccount, touchIdInfo: Object) => 
     })
 
     if (account.activeWalletIds.length < 1) {
+      // we are going to assume that since there is no wallets, this is a first time user
+      accountInitObject.showOnBoarding = true
+      // set the property on the user so that we can launch on boarding
       // lets create the wallet
       const ethWalletName = s.strings.string_first_ethereum_wallet_name
       const btcWalletName = s.strings.string_first_bitcoin_wallet_name
@@ -103,13 +108,9 @@ export const initializeAccount = (account: EdgeAccount, touchIdInfo: Object) => 
         for (const plugin of currencyPlugins) {
           if (plugin.currencyInfo.currencyCode.toLowerCase() === global.currencyCode.toLowerCase()) {
             walletType = plugin.currencyInfo.walletTypes[0]
-            // XXX Hack for Ripple/XRP
-            if (global.currencyCode.toLowerCase() === 'xrp') {
-              walletName = sprintf(s.strings.my_crypto_wallet_name, 'XRP')
-            } else {
-              walletName = sprintf(s.strings.my_crypto_wallet_name, plugin.currencyInfo.currencyName)
-            }
+            walletName = sprintf(s.strings.my_crypto_wallet_name, plugin.currencyInfo.currencyName)
             edgeWallet = await ACCOUNT_API.createCurrencyWalletRequest(account, walletType, { name: walletName, fiatCurrencyCode })
+            global.firebase && global.firebase.analytics().logEvent(`Signup_Wallets_Created`)
           }
         }
       }
@@ -117,6 +118,7 @@ export const initializeAccount = (account: EdgeAccount, touchIdInfo: Object) => 
         edgeWallet = await ACCOUNT_API.createCurrencyWalletRequest(account, btcWalletType, { name: btcWalletName, fiatCurrencyCode })
         await ACCOUNT_API.createCurrencyWalletRequest(account, bchWalletType, { name: bchWalletName, fiatCurrencyCode })
         await ACCOUNT_API.createCurrencyWalletRequest(account, ethWalletType, { name: ethWalletName, fiatCurrencyCode })
+        global.firebase && global.firebase.analytics().logEvent(`Signup_Wallets_Created`)
       }
       accountInitObject.walletId = edgeWallet.id
       accountInitObject.currencyCode = edgeWallet.currencyInfo.currencyCode
@@ -178,6 +180,8 @@ export const initializeAccount = (account: EdgeAccount, touchIdInfo: Object) => 
     accountInitObject.bluetoothMode = localFinal.bluetoothMode
     accountInitObject.passwordReminder = localFinal.passwordReminder
     accountInitObject.isAccountBalanceVisible = localFinal.isAccountBalanceVisible
+    accountInitObject.isWalletFiatBalanceVisible = localFinal.isWalletFiatBalanceVisible
+    accountInitObject.spendingLimits = localFinal.spendingLimits
 
     accountInitObject.pinLoginEnabled = await context.pinLoginEnabled(account.username)
 

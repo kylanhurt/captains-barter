@@ -186,4 +186,9 @@ export type TokenDirectorySearchResult = {
   index: number,
   item: DirectoryTokenInfo,
   separators?: any
+export type SpendingLimits = {
+  transaction: {
+    isEnabled: boolean,
+    amount: number
+  }
 }
