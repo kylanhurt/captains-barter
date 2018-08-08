@@ -12,6 +12,7 @@ import type {
   EdgeTransaction
 } from 'edge-core-js'
 import _ from 'lodash'
+import type { State } from './ReduxTypes'
 import { Platform } from 'react-native'
 import { getCurrencyConverter } from './Core/selectors.js'
 import { intl } from '../locales/intl.js'
@@ -181,83 +182,71 @@ export const decimalOrZero = (input: string, decimalPlaces: number): string => {
   }
 }
 
-export const getCryptoBalanceInfoFromWallet = (wallet: GuiWallet, currencyCode: string, state: State): CryptoBalanceInfo => {
-  const settings = state.ui.settings
-  const nativeBalance = wallet.nativeBalances[currencyCode]
-  let denominations
-  if (settings[currencyCode]) {
-    denominations = settings[currencyCode].denominations
-  } else {
-    const tokenInfo = settings.customTokens.find(token => token.currencyCode === currencyCode)
-    if (!tokenInfo) return { currencyCode, formattedCryptoBalance: intl.formatNumber(0, {toFixed: 2}), symbol: '' }
-    denominations = tokenInfo.denominations
-  }
-  const exchangeDenomination = denominations.find(denomination => denomination.name === currencyCode)
-  if (!exchangeDenomination) return { currencyCode, formattedCryptoBalance: intl.formatNumber(0, {toFixed: 2}), symbol: '' }
-  const nativeToExchangeRatio: string = exchangeDenomination.multiplier
-  const symbol = exchangeDenomination.symbol || ''
-  const preliminaryCryptoBalance = truncateDecimals(bns.div(nativeBalance, nativeToExchangeRatio, DIVIDE_PRECISION), 6)
-  const formattedCryptoBalance = intl.formatNumber(decimalOrZero(preliminaryCryptoBalance, 6))
-  const cryptoInfo = {
-    currencyCode,
-    formattedCryptoBalance,
-    symbol
-  }
-  return cryptoInfo
-}
-
 // helper function to convert either currency or token crypto amount to default fiat (formatted)
 // uses default fiat setting to decide currency to convert to
 // this is *not* to be used for tallying because it returns a string
 export const getCurrencyAccountFiatBalanceFromWallet = (wallet: GuiWallet, currencyCode: string, state: State): string => {
   const settings = state.ui.settings
   const nativeBalance = wallet.nativeBalances[currencyCode]
-  if (nativeBalance && nativeBalance !== '0') {
-    let denominations
-    if (settings[currencyCode]) {
-      denominations = settings[currencyCode].denominations
-    } else {
-      const tokenInfo = settings.customTokens.find(token => token.currencyCode === currencyCode)
-      if (!tokenInfo) return intl.formatNumber(0, {toFixed: 2})
-      denominations = tokenInfo.denominations
-    }
-    const exchangeDenomination = denominations.find(denomination => denomination.name === currencyCode)
-    if (!exchangeDenomination) return intl.formatNumber(0, {toFixed: 2})
-    const nativeToExchangeRatio: string = exchangeDenomination.multiplier
-    const cryptoAmount = parseFloat(convertNativeToExchange(nativeToExchangeRatio)(nativeBalance))
-    const currencyConverter = getCurrencyConverter(state)
-    const unformattedFiatValue = currencyConverter.convertCurrency(currencyCode, 'iso:' + settings.defaultFiat, cryptoAmount)
-    const formattedFiatValue = intl.formatNumber(unformattedFiatValue, {toFixed: 2})
-    return formattedFiatValue
+  if (!nativeBalance || nativeBalance === '0') return '0'
+  let denominations
+  if (settings[currencyCode]) {
+    denominations = settings[currencyCode].denominations
+  } else {
+    const tokenInfo = settings.customTokens.find(token => token.currencyCode === currencyCode)
+    if (!tokenInfo) return '0'
+    denominations = tokenInfo.denominations
   }
-  return intl.formatNumber(0, {toFixed: 2})
+  const exchangeDenomination = denominations.find(denomination => denomination.name === currencyCode)
+  if (!exchangeDenomination) return '0'
+  const nativeToExchangeRatio: string = exchangeDenomination.multiplier
+  const cryptoAmount = parseFloat(convertNativeToExchange(nativeToExchangeRatio)(nativeBalance))
+  const currencyConverter = getCurrencyConverter(state)
+  const unformattedFiatValue = currencyConverter.convertCurrency(currencyCode, 'iso:' + settings.defaultFiat, cryptoAmount)
+  const formattedFiatValue = intl.formatNumber(unformattedFiatValue, {toFixed: 2})
+  return formattedFiatValue || '0'
 }
 
 // helper function to convert either currency or token crypto amount to default fiat (formatted)
-// uses wallet fiat setting* (immutable) to decide which currency to convert to
+// uses *wallet fiat setting* (immutable) to decide which currency to convert to
 // this is *not* to be used for tallying because it returns a string
 export const getCurrencyWalletFiatBalanceFromWallet = (wallet: GuiWallet, currencyCode: string, state: State): string => {
   const settings = state.ui.settings
   const nativeBalance = wallet.nativeBalances[currencyCode]
-  if (nativeBalance && nativeBalance !== '0') {
-    let denominations
-    if (settings[currencyCode]) {
-      denominations = settings[currencyCode].denominations
-    } else {
-      const tokenInfo = settings.customTokens.find(token => token.currencyCode === currencyCode)
-      if (!tokenInfo) return intl.formatNumber(0, {toFixed: 2})
-      denominations = tokenInfo.denominations
-    }
-    const exchangeDenomination = denominations.find(denomination => denomination.name === currencyCode)
-    if (!exchangeDenomination) return intl.formatNumber(0, {toFixed: 2})
-    const nativeToExchangeRatio: string = exchangeDenomination.multiplier
-    const cryptoAmount = parseFloat(convertNativeToExchange(nativeToExchangeRatio)(nativeBalance))
-    const currencyConverter = getCurrencyConverter(state)
-    const unformattedFiatValue = currencyConverter.convertCurrency(currencyCode, wallet.isoFiatCurrencyCode, cryptoAmount)
-    const formattedFiatValue = intl.formatNumber(unformattedFiatValue, {toFixed: 2})
-    return formattedFiatValue
+  if (!nativeBalance || nativeBalance === '0') return '0'
+  let denominations
+  if (settings[currencyCode]) {
+    denominations = settings[currencyCode].denominations
+  } else {
+    const tokenInfo = settings.customTokens.find(token => token.currencyCode === currencyCode)
+    if (!tokenInfo) return '0'
+    denominations = tokenInfo.denominations
   }
-  return intl.formatNumber(0, {toFixed: 2})
+  const exchangeDenomination = denominations.find(denomination => denomination.name === currencyCode)
+  if (!exchangeDenomination) return '0'
+  const nativeToExchangeRatio: string = exchangeDenomination.multiplier
+  const cryptoAmount = parseFloat(convertNativeToExchange(nativeToExchangeRatio)(nativeBalance))
+  const currencyConverter = getCurrencyConverter(state)
+  const unformattedFiatValue = currencyConverter.convertCurrency(currencyCode, wallet.isoFiatCurrencyCode, cryptoAmount)
+  const formattedFiatValue = intl.formatNumber(unformattedFiatValue, {toFixed: 2})
+  return formattedFiatValue || '0'
+}
+
+// not sure if this can be used with tokens
+export const calculateFiatFromCryptoCurrency = (wallet: GuiWallet, state: State): string => {
+  let fiatValue = 0 // default to zero if not calculable
+  const currencyCode = wallet.currencyCode
+  const nativeBalance = wallet.nativeBalances[currencyCode]
+  const settings = state.ui.settings
+  const currencyConverter = getCurrencyConverter(state)
+  if (!nativeBalance || nativeBalance === '0') return '0'
+  const denominations = settings[currencyCode].denominations
+  const exchangeDenomination = denominations.find(denomination => denomination.name === currencyCode)
+  if (!exchangeDenomination) return '0'
+  const nativeToExchangeRatio: string = exchangeDenomination.multiplier
+  const cryptoAmount: number = parseFloat(convertNativeToExchange(nativeToExchangeRatio)(nativeBalance))
+  fiatValue = currencyConverter.convertCurrency(currencyCode, 'iso:' + settings.defaultFiat, cryptoAmount)
+  return intl.formatNumber(fiatValue, { toFixed: 2 }) || '0'
 }
 
 // Used to convert outputs from core into other denominations (exchangeDenomination, displayDenomination)

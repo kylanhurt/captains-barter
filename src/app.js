@@ -4,9 +4,11 @@
 
 import './util/polyfills'
 
+import { Client } from 'bugsnag-react-native'
 import React, { Component } from 'react'
-import { AsyncStorage, Platform, Text, TextInput } from 'react-native'
+import { AppState, AsyncStorage, Platform, Text, TextInput } from 'react-native'
 import BackgroundTask from 'react-native-background-task'
+import firebase from 'react-native-firebase'
 import RNFS from 'react-native-fs'
 import PushNotification from 'react-native-push-notification'
 import { Provider } from 'react-redux'
@@ -20,6 +22,8 @@ import Main from './modules/MainConnector'
 import { log, logToServer } from './util/logger'
 import { makeCoreContext } from './util/makeContext.js'
 
+global.bugsnag = new Client(ENV.BUGSNAG_API_KEY)
+
 const store: {} = configureStore({})
 
 const perfTimers = {}
@@ -30,6 +34,9 @@ console.log('App directory: ' + RNFS.DocumentDirectoryPath)
 console.log('***********************')
 
 global.clog = console.log
+if (ENV.USE_FIREBASE) {
+  global.firebase = firebase
+}
 
 const IGNORED_WARNINGS = ['slowlog', 'Setting a timer for a long period of time']
 // $FlowExpectedError
@@ -114,6 +121,7 @@ global.pcount = function (label: string) {
 }
 
 BackgroundTask.define(async () => {
+  console.log('appStateLog: running background task')
   const lastNotif = await AsyncStorage.getItem(Constants.LOCAL_STORAGE_BACKGROUND_PUSH_KEY)
   const now = new Date()
   if (lastNotif) {
@@ -150,16 +158,31 @@ BackgroundTask.define(async () => {
         }
       }
     } catch (error) {
+      global.bugsnag.notify(error)
       console.error(error)
     }
   })
   await AsyncStorage.setItem(Constants.LOCAL_STORAGE_BACKGROUND_PUSH_KEY, now.toString())
   BackgroundTask.finish()
 })
-
+function _handleAppStateChange () {
+  console.log('appStateLog: ', AppState.currentState)
+}
+function _handleSingleAppStateChange () {
+  if (AppState.currentState === 'background') {
+    AppState.removeEventListener('change', _handleSingleAppStateChange)
+    BackgroundTask.schedule()
+  }
+}
 export default class App extends Component<{}> {
   componentDidMount () {
-    BackgroundTask.schedule()
+    console.log('appStateLog: Component Mounted', AppState.currentState)
+    AppState.addEventListener('change', _handleAppStateChange)
+    if (Platform.OS === Constants.IOS) {
+      BackgroundTask.schedule()
+    } else {
+      AppState.addEventListener('change', _handleSingleAppStateChange)
+    }
   }
 
   render () {

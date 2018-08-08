@@ -6,6 +6,8 @@ import { isIphoneX } from '../../../../lib/isIphoneX.js'
 import THEME from '../../../../theme/variables/airbitz'
 import { PLATFORM } from '../../../../theme/variables/platform.js'
 
+export const activeOpacity = THEME.OPACITY.ACTIVE
+
 export const styles = {
   container: {
     flex: 1,
@@ -49,7 +51,7 @@ export const styles = {
   payeeNameInput: {
     color: THEME.COLORS.GRAY_1,
     fontSize: 17,
-    height: Platform.OS === 'ios' ? 24 : 27,
+    height: Platform.OS === 'ios' ? 24 : 33,
     textAlign: 'center',
     width: '100%',
     fontFamily: THEME.FONTS.DEFAULT
@@ -140,7 +142,7 @@ export const styles = {
     color: THEME.COLORS.GRAY_1,
     fontSize: 17,
     textAlign: 'center',
-    height: 26,
+    height: PLATFORM.OS === 'ios' ? 26 : 34,
     flex: 1,
     fontFamily: THEME.FONTS.DEFAULT
   },
@@ -201,10 +203,10 @@ export const styles = {
   },
   categoryInput: {
     paddingTop: 4,
-    height: 22,
+    height: PLATFORM.OS === 'ios' ? 22 : 26,
     fontSize: 13,
     flex: 1,
-    color: THEME.COLORS.GRAY_2,
+    color: THEME.COLORS.GRAY_1,
     fontFamily: THEME.FONTS.DEFAULT
   },
   notesRow: {
@@ -367,6 +369,19 @@ export const styles = {
   },
   symbol: {
     fontFamily: THEME.FONTS.SYMBOLS
+  },
+  txIDIcon: {
+    color: THEME.COLORS.PRIMARY
+  },
+  blockExplorerButton: {
+    borderWidth: 0,
+    height: 44,
+    justifyContent: 'center'
+  },
+  blockExplorerButtonText: {
+    fontSize: 18,
+    color: THEME.COLORS.ACCENT_BLUE,
+    alignSelf: 'center'
   }
 }
 
