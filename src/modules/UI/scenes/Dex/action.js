@@ -36,7 +36,7 @@ const configs = {
 
 const RELAYER_API_URL = 'http://localhost:3000/v0'
 const ORDER_BOOK_API_URL = 'orderbook'
-const relayerAddress = '0x00ac112bf28ae1d0e9569af6844298283515f4b0'
+const relayerAddress = '0x03aaea12a47b8e688ed2f882b19fb3a3471daa0e'
 const relayerSubproviderAddress = 'http://127.0.0.1:8545'
 
 // Number of decimals to use (for ETH and ZRX)
@@ -270,7 +270,7 @@ export const fillDEXOrder = () => async (dispatch: Dispatch, getState: GetState)
     const WETHOrderUnitAmount = ZeroEx.toUnitAmount(WETHOrderAmount, DECIMALS)
 
     // if there isn't enough WETH balance to fund the fulfillment then do am ETH -> WETH conversion routine
-    if (WETHOrderUnitAmount.gt(WETHBalanceUnitAmount)) {
+    /* if (WETHOrderUnitAmount.gt(WETHBalanceUnitAmount)) {
       console.log('DEX: convert ETH to WETH')
       // const WETH_DECIMAL_STRING = DECIMALS.toString()
       // const WETH_MULTIPLIER = 1 + '0'.repeat(WETH_DECIMAL_STRING)
@@ -279,7 +279,7 @@ export const fillDEXOrder = () => async (dispatch: Dispatch, getState: GetState)
       const convertEthTxHash = await zeroEx.etherToken.depositAsync(WETH_CONTRACT_ADDRESS, WETHDeficit, takerAddress)
       console.log('DEX: convertEthTxHash is: ',  convertEthTxHash)    
       await zeroEx.awaitTransactionMinedAsync(convertEthTxHash)
-    }
+    } */
 
     // check WETH allowance
     const allowanceAmount = await zeroEx.token.getProxyAllowanceAsync(WETH_CONTRACT_ADDRESS, takerAddress)

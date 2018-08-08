@@ -56,7 +56,6 @@ export class ConfirmFillDexOrderModalComponent extends Component<ConfirmFillDexO
             <View style={styles.orderBookResultInfo}>
               <View style={styles.confirmDexOrderInfoArea}>
                 <Text style={styles.confirmDexOrderAmountsText}>{`${selectedDEXFormattedOrderToFill.makerNativeTokenAmount} ${selectedDEXFormattedOrderToFill.currencyCode} / ${selectedDEXFormattedOrderToFill.takerNativeTokenAmount} WETH`}</Text>
-                <Text style={styles.confirmDexOrderRateText}>{`${selectedDEXFormattedOrderToFill.exchangeRate} ${selectedDEXFormattedOrderToFill.currencyCode} / WETH`}</Text>
                 <Text style={styles.confirmDexOrderExpirationText}>{s.strings.dex_order_book_result_expiration} {selectedDEXFormattedOrderToFill.expiration}</Text>
               </View>
             </View>            
