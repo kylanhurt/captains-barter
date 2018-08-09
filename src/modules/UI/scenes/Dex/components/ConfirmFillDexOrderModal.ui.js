@@ -37,7 +37,8 @@ export class ConfirmFillDexOrderModalComponent extends Component<ConfirmFillDexO
   }
 
   _onCancel = () => {
-    console.log('DEX: Cancel pressed')
+    console.log('DEX: Cancel pressed')    
+    this.props.hideConfirmFillDexOrderModal()
   }
 
   render () {

@@ -119,7 +119,7 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
             <View style={styles.formArea}>
               <View style={[styles.textInputArea]}>
                 <TertiaryButton onPress={this._onPressTokenCodeButton}>
-                  <TertiaryButton.Text>{this.state.tokenCode || 'Select Token Code to Buy'}</TertiaryButton.Text>
+                  <TertiaryButton.Text>{this.state.tokenCode || s.strings.dex_create_order_select_token_sell}</TertiaryButton.Text>
                 </TertiaryButton>
               </View>
               <View style={[styles.textInputArea]}>

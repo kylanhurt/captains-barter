@@ -1,7 +1,6 @@
 // @flow
 
 import AsyncLock from 'async-lock'
-import dateFormat from 'dateformat'
 import RNFS from 'react-native-fs'
 
 import ENV from '../../env.json'
@@ -106,11 +105,10 @@ export async function log (...info: Array<number | string | null | {}>) {
   const logs = normalize(...info)
 
   const now = Date.now()
-  const d = dateFormat(now, 'HH:MM:ss:l')
 
   try {
     await lock.acquire('logger', async () => {
-      return writeLog(d + ': ' + logs)
+      return writeLog(logs)
     })
   } catch (e) {
     global.clog(e)

@@ -316,14 +316,11 @@ export const fillDEXOrder = () => async (dispatch: Dispatch, getState: GetState)
     console.log('DEX: fillTxHash is: ', fillTxHash);
     const txReceipt = await zeroEx.awaitTransactionMinedAsync(fillTxHash)
     console.log('DEX: order fulfillment transaction completed!, txReceipt is: ', txReceipt)
-    Alert.alert('Trade Broadcasted', 'Filling of this order has been broadcasted to the network and should be reflected in your wallet balances momentarily.')
-
   }
   catch (e) {
     console.log('DEX Order Fill error', e)
   }
   dispatch(updateConfirmFillDexOrderSubmitProcessing(false))
-  dispatch(hideConfirmFillDexOrderModal())  
 }
 
 export const updateConfirmFillDexOrderSubmitProcessing = (isConfirmFillDexOrderSubmitProcessing: boolean) => {
