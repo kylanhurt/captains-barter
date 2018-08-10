@@ -40,66 +40,74 @@ export type CreateDexBuyTokenOrderDispatchProps = {
 export type CreateDexBuyTokenOrderProps = CreateDexBuyTokenOrderOwnProps & CreateDexBuyTokenOrderDispatchProps & CreateDexBuyTokenOrderStateProps
 
 export type CreateDexBuyTokenOrderState = {
-  tokenCode: string,
-  tokenAmount: string,
-  ethAmount: string
+  sellTokenCode: string,
+  buyTokenCode: string,
+  sellTokenAmount: string,
+  buyTokenAmount: string
 }
 
 export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyTokenOrderProps, CreateDexBuyTokenOrderState> {
   constructor (props: CreateDexBuyTokenOrderProps) {
     super(props)
     this.state = {
-      tokenCode: '',
-      tokenAmount: '0',
-      ethAmount: '0'
+      sellTokenCode: '',
+      sellTokenAmount: '0',
+      buyTokenCode: '',
+      buyTokenAmount: '0'
     }
   }
   componentWillMount = () => {
     this.props.getTokenList()
   }
 
-  _onEnterTokenCodeTextField = () => {
-    Actions[CREATE_DEX_SELECT_TOKEN]({
-      tokenCode: this.state.tokenCode,
-      _onSelectToken: this._onSelectToken
-    })
-  }
-
-  _onSelectToken = (currencyCode: string) => {
+  _onSelectSellToken = (sellTokenCode: string) => {
     this.setState({
-      tokenCode: currencyCode
+      sellTokenCode: sellTokenCode
     }, () => {
       Actions.pop()
-      // this.destinationQuantity.focus()
     })
   }
 
-  _onPressTokenCodeButton = () => {
+  _onPressSellTokenCodeButton = () => {
     Actions[CREATE_DEX_SELECT_TOKEN]({
-      tokenCode: this.state.tokenCode,
-      _onSelectToken: this._onSelectToken
+      sellTokenCode: this.state.sellTokenCode,
+      _onSelectSellToken: this._onSelectSellToken
     })
   }
 
-  _onChangeTokenAmountInput = (input: string) => {
+  _onSelectBuyToken = (buyTokenCode: string) => {
+    this.setState({
+      buyTokenCode: buyTokenCode
+    }, () => {
+      Actions.pop()
+    })
+  }
+  _onPressBuyTokenCodeButton = () => {
+    Actions[CREATE_DEX_SELECT_TOKEN]({
+      buyTokenCode: this.state.buyTokenCode,
+      _onSelectBuyToken: this._onSelectBuyToken
+    })
+  }
+
+  _onChangeSellTokenAmountInput = (input: string) => {
     console.log('DEX: input is: ', input)
     if (!intl.isValidInput(input)) {
       return
     }
     const formattedTokenAmountInput = intl.formatToNativeNumber(intl.prettifyNumber(input))
     this.setState({
-      tokenAmount: formattedTokenAmountInput
+      sellTokenAmount: formattedTokenAmountInput
     })
   }
 
-  _onChangeEthAmountInput = (input: string) => {
+  _onChangeBuyTokenAmountInput = (input: string) => {
     console.log('DEX: input is: ', input)
     if (!intl.isValidInput(input)) {
       return
     }
-    const formattedEthAmountInput = intl.formatToNativeNumber(intl.prettifyNumber(input))
+    const formattedTokenAmountInput = intl.formatToNativeNumber(intl.prettifyNumber(input))
     this.setState({
-      ethAmount: formattedEthAmountInput
+      buyTokenAmount: formattedTokenAmountInput
     })
   }
 
@@ -118,31 +126,38 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
             </View>
             <View style={styles.formArea}>
               <View style={[styles.textInputArea]}>
-                <TertiaryButton onPress={this._onPressTokenCodeButton}>
-                  <TertiaryButton.Text>{this.state.tokenCode || s.strings.dex_create_order_select_token_sell}</TertiaryButton.Text>
+                <TertiaryButton onPress={this._onPressSellTokenCodeButton}>
+                  <TertiaryButton.Text>{this.state.sellTokenCode || s.strings.dex_create_order_select_token_sell}</TertiaryButton.Text>
                 </TertiaryButton>
               </View>
               <View style={[styles.textInputArea]}>
                 <FormField
-                  style={[styles.tokenAmountInput]}
-                  value={this.state.tokenAmount}
+                  style={[styles.sellTokenAmountInput]}
+                  value={this.state.sellTokenAmount}
                   keyboardType={'decimal-pad'}
-                  label={s.strings.dex_buy_tokens_enter_token_amount_to_buy}
+                  label={s.strings.dex_buy_tokens_enter_token_amount_to_sell}
                   returnKeyType={'next'}
-                  onChangeText={this._onChangeTokenAmountInput}
-                />
-              </View>
-              <View style={[styles.textInputArea]}>
-                <FormField
-                  style={[styles.ethAmountInput]}
-                  value={this.state.ethAmount}
-                  label={s.strings.dex_buy_tokens_enter_weth_amount_to_purchase_with}
-                  returnKeyType={'done'}
-                  keyboardType={'decimal-pad'}
-                  onChangeText={this._onChangeEthAmountInput}
+                  onChangeText={this._onChangeSellTokenAmountInput}
                 />
               </View>
             </View>
+            <View style={[styles.formArea, {marginVertical: 18}]}>
+              <View style={[styles.textInputArea]}>
+                <TertiaryButton onPress={this._onPressSellTokenCodeButton}>
+                  <TertiaryButton.Text>{this.state.buyTokenCode || s.strings.dex_create_order_select_token_buy}</TertiaryButton.Text>
+                </TertiaryButton>
+              </View>
+              <View style={[styles.textInputArea]}>
+                <FormField
+                  style={[styles.buyTokenAmountInput]}
+                  value={this.state.buyTokenAmount}
+                  label={s.strings.dex_buy_tokens_enter_weth_amount_to_purchase_with}
+                  returnKeyType={'done'}
+                  keyboardType={'decimal-pad'}
+                  onChangeText={this._onChangeBuyTokenAmountInput}
+                />
+              </View>
+            </View>            
             <View style={[styles.buttonsArea]}>
               <PrimaryButton style={styles.submitButton} onPress={this._onSubmit}>
                 {isCreateDexBuyTokenOrderProcessing ? (
@@ -160,8 +175,8 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
   }
 
   _onSubmit = () => {
-    const { tokenCode, tokenAmount, ethAmount } = this.state
+    const { sellTokenCode, sellTokenAmount, buyTokenAmount } = this.state
     console.log('DEX: submission executing')
-    this.props.submitDexBuyTokenOrder(tokenCode, tokenAmount, ethAmount)
+    this.props.submitDexBuyTokenOrder(sellTokenCode, sellTokenAmount, buyTokenCOde, buyTokenAmount)
   }
 }

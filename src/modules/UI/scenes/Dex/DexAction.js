@@ -59,7 +59,7 @@ export const startWeb3Engine = (walletId: string, state: State) => {
   return providers[walletId]  
 }
 
-export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, ethAmount: string) => async (dispatch: Dispatch, getState: GetState) => {
+export const submitDexBuyTokenOrder = (sellTokenCode: string, tokenAmount: string, buyTokenCode, ethAmount: string) => async (dispatch: Dispatch, getState: GetState) => {
   dispatch(updateCreateDexBuyTokenOrderProcessing(true))
   try {
     const state = getState()
@@ -86,8 +86,8 @@ export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, e
     console.log(accounts)
 
     const WETH_CONTRACT_ADDRESS = zeroEx.etherToken.getContractAddressIfExists() // The wrapped ETH token contract  
-    const tokenInfo = tokenDirectory.find(token => token.symbol === tokenCode )
-    if (!tokenInfo) console.log('DEX: Token contract address not found for ', tokenCode)
+    const tokenInfo = tokenDirectory.find(token => token.symbol === sellTokenCode )
+    if (!tokenInfo) console.log('DEX: Token contract address not found for ', sellTokenCode)
     const TOKEN_CONTRACT_ADDRESS = tokenInfo.address.toLowerCase()
     // The Exchange.sol address (0x exchange smart contract)
     // Retrieves the Ethereum address of the Exchange contract deployed on the network
@@ -151,9 +151,11 @@ export const submitDexBuyTokenOrder = (tokenCode: string, tokenAmount: string, e
     // Send orderbook request to relayer and receive an OrderbookResponse instance
     const orderbookResponse: OrderbookResponse = await relayerClient.getOrderbookAsync(orderbookRequest)
     console.log('DEX: orderbookResponse is: ', orderbookResponse)
+    Alert.alert(s.strings.dex_submit_order_success_title, s.strings_dex_submit_order_success_message)
   }
   catch (e) {
-    throw Error('submitDexBuyTokenOrder failed with error: ', e)
+    console.log('DEX: submitDexBuyTokenOrder failed with error: ', e)
+    Alert.alert(s.strings.dex_submit_order_failure_title, s.strings_dex_submit_order_failure_message)
   }
   dispatch(updateCreateDexBuyTokenOrderProcessing(false))
 }
