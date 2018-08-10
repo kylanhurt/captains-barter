@@ -8,7 +8,7 @@ import {
   QUESTION_ICON,
   FONT_AWESOME
 } from '../../../../../constants/indexConstants.js'
-import { styles } from '../style.js'
+import { styles } from '../DexStyle.js'
 import { Icon } from '../../../components/Icon/Icon.ui.js'
 import { InteractiveModal, PrimaryButton, SecondaryButton, TertiaryButton } from '../../../components/Modals'
 

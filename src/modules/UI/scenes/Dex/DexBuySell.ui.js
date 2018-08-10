@@ -8,7 +8,7 @@ import { PrimaryButton, SecondaryButton, TertiaryButton } from '../../components
 import Text from '../../components/FormattedText'
 import { Gradient } from '../../components/Gradient/Gradient.ui'
 import SafeAreaView from '../../components/SafeAreaView'
-import styles, { styles as rawStyle } from './style.js'
+import styles, { styles as rawStyle } from './DexStyle.js'
 
 export type Props = {
 

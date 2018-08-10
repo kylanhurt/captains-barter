@@ -13,7 +13,7 @@ import { PrimaryButton } from '../../components/Modals/components/PrimaryButton.
 import Text from '../../components/FormattedText'
 import { Gradient } from '../../components/Gradient/Gradient.ui.js'
 import SafeAreaView from '../../components/SafeAreaView'
-import styles from './style.js'
+import styles from './DexStyle.js'
 
 export type CreateDexBuyTokenOrderOwnProps = {
   selectedWalletId: string,

@@ -6,7 +6,7 @@ import type { Dispatch, State } from '../../../ReduxTypes'
 import {
   fetchTokenList,
   submitDexBuyTokenOrder  
-} from './action.js'
+} from './DexAction.js'
 import { CreateDexBuyTokenOrderComponent } from './CreateDexBuyTokenOrder.ui.js'
 import {
   getCurrencyAccountFiatBalanceFromWallet,

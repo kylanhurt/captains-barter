@@ -7,7 +7,7 @@ import SafeAreaView from '../../components/SafeAreaView'
 import { Gradient } from '../../components/Gradient/Gradient.ui'
 import { FormField } from '../../../../components/FormField.js'
 import SearchResults from '../../components/SearchResults'
-import styles, { styles as stylesRaw } from './style.js'
+import styles, { styles as stylesRaw } from './DexStyle.js'
 
 export type CreateDexSelectTokenOwnProps = {
   _onSelectToken: (tokenSymbol: string) => void

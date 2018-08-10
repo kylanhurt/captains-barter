@@ -14,7 +14,7 @@ import {
 import {
   fillDexOrder,
   showConfirmFillDexOrderModal
-} from '../action.js'
+} from '../DexAction.js'
 import { OrderBookResultComponent } from './OrderBookResult.ui.js'
 import type { DEXOrder, FormattedDEXOrderInfo } from '../../../../../types.js'
 import s from '../../../../../locales/strings.js'
