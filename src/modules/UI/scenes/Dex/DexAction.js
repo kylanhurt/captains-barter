@@ -270,30 +270,32 @@ export const fillDEXOrder = () => async (dispatch: Dispatch, getState: GetState)
     const order = state.ui.scenes.dex.selectedDEXOrderToFill
     const selectedWallet = getSelectedWallet(state)
     const selectedWalletId = selectedWallet.id
+    const tokenDirectory = state.ui.scenes.dex.tokenDirectory
+    const TAKER_CONTRACT_ADDRESS = order.takerTokenAddress    
+    const takerTokenInfo =  tokenDirectory.find(token => token.address.toLowerCase() === TAKER_CONTRACT_ADDRESS )
+    const TAKER_DECIMALS = takerTokenInfo.decimal
     const takerAddress = selectedWallet.receiveAddress.publicAddress // this is the current user's address (filler)
     let web3Engine = providers[selectedWalletId]
     if (!web3Engine) web3Engine = startWeb3Engine(selectedWalletId, state)
     const zeroEx = new ZeroEx(providers[selectedWalletId], configs)
     const web3Wrapper = new Web3Wrapper(web3Engine)
 
-    // get sell token info
-    const WETH_CONTRACT_ADDRESS = zeroEx.etherToken.getContractAddressIfExists() // The wrapped ETH token contract  
 
-    // check to see if there's enough WETH to fill the order
-    const WETHBalance = selectedWallet.nativeBalances['WETH']
-    const WETHBalanceBigNumber = new BigNumber(WETHBalance)
-    const WETHBalanceUnitAmount = ZeroEx.toUnitAmount(WETHBalanceBigNumber, DECIMALS)
-    const WETHOrderAmount = order.takerTokenAmount
-    const WETHOrderUnitAmount = ZeroEx.toUnitAmount(WETHOrderAmount, DECIMALS)
+    // check to see if there's enough tokens to fill the order
+    const takerBalance = selectedWallet.nativeBalances[takerTokenInfo.symbol]
+    const takerBalanceBigNumber = new BigNumber(takerBalance)
+    const takerBalanceUnitAmount = ZeroEx.toUnitAmount(takerBalanceBigNumber, DECIMALS)
+    const takerOrderAmount = order.takerTokenAmount
+    const takerOrderUnitAmount = ZeroEx.toUnitAmount(takerOrderAmount, DECIMALS)
 
-    // check WETH allowance
-    const allowanceAmount = await zeroEx.token.getProxyAllowanceAsync(WETH_CONTRACT_ADDRESS, takerAddress)
+    // check token allowance
+    const allowanceAmount = await zeroEx.token.getProxyAllowanceAsync(TAKER_CONTRACT_ADDRESS, takerAddress)
     console.log('DEX: allowanceAmount is: ',  allowanceAmount)    
     if (allowanceAmount.lt(order.takerTokenAmount)) {
-      console.log('DEX: WETH allowance not high enough, setting unlimited proxy allowance')
-      const setMakerAllowTxHash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(WETH_CONTRACT_ADDRESS, takerAddress)
-      console.log('DEX: increase setMakerAllowTxHash: ', setMakerAllowTxHash)
-      await zeroEx.awaitTransactionMinedAsync(setMakerAllowTxHash)    
+      console.log('DEX: taker token allowance not high enough, setting unlimited proxy allowance')
+      const setTakerAllowTxHash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(TAKER_CONTRACT_ADDRESS, takerAddress)
+      console.log('DEX: increase setMakerAllowTxHash: ', setTakerAllowTxHash)
+      await zeroEx.awaitTransactionMinedAsync(setTakerAllowTxHash)    
     }
     const orderHash = ZeroEx.getOrderHashHex(order)
     console.log('DEX: orderHash is: ', orderHash)
