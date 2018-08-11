@@ -71,7 +71,7 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
   _onPressSellTokenCodeButton = () => {
     Actions[CREATE_DEX_SELECT_TOKEN]({
       sellTokenCode: this.state.sellTokenCode,
-      _onSelectSellToken: this._onSelectSellToken
+      _onSelectToken: this._onSelectSellToken
     })
   }
 
@@ -82,10 +82,11 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
       Actions.pop()
     })
   }
+
   _onPressBuyTokenCodeButton = () => {
     Actions[CREATE_DEX_SELECT_TOKEN]({
       buyTokenCode: this.state.buyTokenCode,
-      _onSelectBuyToken: this._onSelectBuyToken
+      _onSelectToken: this._onSelectBuyToken
     })
   }
 
@@ -143,7 +144,7 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
             </View>
             <View style={[styles.formArea, {marginVertical: 18}]}>
               <View style={[styles.textInputArea]}>
-                <TertiaryButton onPress={this._onPressSellTokenCodeButton}>
+                <TertiaryButton onPress={this._onPressBuyTokenCodeButton}>
                   <TertiaryButton.Text>{this.state.buyTokenCode || s.strings.dex_create_order_select_token_buy}</TertiaryButton.Text>
                 </TertiaryButton>
               </View>
@@ -175,8 +176,8 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
   }
 
   _onSubmit = () => {
-    const { sellTokenCode, sellTokenAmount, buyTokenAmount } = this.state
+    const { sellTokenCode, sellTokenAmount, buyTokenCode, buyTokenAmount } = this.state
     console.log('DEX: submission executing')
-    this.props.submitDexBuyTokenOrder(sellTokenCode, sellTokenAmount, buyTokenCOde, buyTokenAmount)
+    this.props.submitDexBuyTokenOrder(sellTokenCode, sellTokenAmount, buyTokenCode, buyTokenAmount)
   }
 }

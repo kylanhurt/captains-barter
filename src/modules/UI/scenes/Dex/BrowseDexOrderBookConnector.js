@@ -47,7 +47,7 @@ export const mapStateToProps = (state: State) => {
 
 export const mapDispatchToProps = (dispatch: Dispatch) => ({
   getTokenList: () => dispatch(fetchTokenList()),
-  fetchDexOrderBook: (type: string, tokenCode: string) => dispatch(fetchDexOrderBook(type, tokenCode))
+  fetchDexOrderBook: (type: string, sellTokenCode: string, buyTokenCode?: string) => dispatch(fetchDexOrderBook(type, sellTokenCode, buyTokenCode))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(BrowseDexOrderBookComponent)
