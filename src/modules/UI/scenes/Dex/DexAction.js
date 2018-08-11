@@ -7,6 +7,7 @@ import { DecodedLogEvent, ZeroEx } from '0x.js'
 // import { ERC20TokenWrapper } from ''
 import { BigNumber } from '@0xproject/utils'
 import { bns } from 'biggystring'
+import s from '../../../../locales/strings.js'
 import { Web3Wrapper } from '@0xproject/web3-wrapper'
 import { Web3ProviderEngine, RPCSubprovider, PrivateKeyWalletSubprovider } from '@0xproject/subproviders'
 import { HttpClient } from '@0xproject/connect'
@@ -59,7 +60,7 @@ export const startWeb3Engine = (walletId: string, state: State) => {
   return providers[walletId]  
 }
 
-export const submitDexBuyTokenOrder = (sellTokenCode: string, tokenAmount: string, buyTokenCode, ethAmount: string) => async (dispatch: Dispatch, getState: GetState) => {
+export const submitDexBuyTokenOrder = (sellTokenCode: string, sellTokenAmount: string, buyTokenCode: string, buyTokenAmount: string) => async (dispatch: Dispatch, getState: GetState) => {
   dispatch(updateCreateDexBuyTokenOrderProcessing(true))
   try {
     const state = getState()
@@ -85,10 +86,18 @@ export const submitDexBuyTokenOrder = (sellTokenCode: string, tokenAmount: strin
     const accounts = await web3Wrapper.getAvailableAddressesAsync();
     console.log(accounts)
 
-    const WETH_CONTRACT_ADDRESS = zeroEx.etherToken.getContractAddressIfExists() // The wrapped ETH token contract  
-    const tokenInfo = tokenDirectory.find(token => token.symbol === sellTokenCode )
-    if (!tokenInfo) console.log('DEX: Token contract address not found for ', sellTokenCode)
-    const TOKEN_CONTRACT_ADDRESS = tokenInfo.address.toLowerCase()
+
+
+    const sellTokenInfo = tokenDirectory.find(token => token.symbol === sellTokenCode )
+    if (!sellTokenInfo) console.log('DEX: Token contract address not found for ', sellTokenCode)
+    const SELL_TOKEN_CONTRACT_ADDRESS = sellTokenInfo.address.toLowerCase()
+    const SELL_TOKEN_DECIMALS = sellTokenInfo.decimal
+
+    const buyTokenInfo = tokenDirectory.find(token => token.symbol === buyTokenCode )
+    if (!buyTokenInfo) console.log('DEX: Token contract address not found for ', buyTokenCode)
+    const BUY_TOKEN_CONTRACT_ADDRESS = buyTokenInfo.address.toLowerCase()
+    const BUY_TOKEN_DECIMALS = buyTokenInfo.decimal
+
     // The Exchange.sol address (0x exchange smart contract)
     // Retrieves the Ethereum address of the Exchange contract deployed on the network
     // that the user-passed web3 provider is connected to.
@@ -97,10 +106,10 @@ export const submitDexBuyTokenOrder = (sellTokenCode: string, tokenAmount: strin
     
     const makerAddress = selectedWallet.receiveAddress.publicAddress
 
-    const setMakerAllowTxHash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(TOKEN_CONTRACT_ADDRESS, makerAddress)
+    const setMakerAllowTxHash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(SELL_TOKEN_CONTRACT_ADDRESS, makerAddress)
     await zeroEx.awaitTransactionMinedAsync(setMakerAllowTxHash)
 
-    // const setTakerAllowTxHash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(WETH_CONTRACT_ADDRESS, takerAddress)
+    // const setTakerAllowTxHash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(BUY_TOKEN_CONTRACT_ADDRESS, takerAddress)
     // await zeroEx.awaitTransactionMinedAsync(setTakerAllowTxHash)
 
     // Generate order
@@ -108,15 +117,15 @@ export const submitDexBuyTokenOrder = (sellTokenCode: string, tokenAmount: strin
       maker: makerAddress, // Ethereum address of our Maker.
       taker: ZeroEx.NULL_ADDRESS, // Ethereum address of our Taker.
       feeRecipient: relayerAddress, // Ethereum address of our Relayer (none for now).
-      makerTokenAddress: TOKEN_CONTRACT_ADDRESS, // The token address the Maker is offering.
-      takerTokenAddress: WETH_CONTRACT_ADDRESS, // The token address the Maker is requesting from the Taker.
+      makerTokenAddress: SELL_TOKEN_CONTRACT_ADDRESS, // The token address the Maker is offering.
+      takerTokenAddress: BUY_TOKEN_CONTRACT_ADDRESS, // The token address the Maker is requesting from the Taker.
       exchangeContractAddress: EXCHANGE_CONTRACT_ADDRESS, // The exchange.sol address.
       salt: ZeroEx.generatePseudoRandomSalt(), // Random number to make the order (and therefore its hash) unique.
       // makerFee: ZeroEx.toBaseUnitAmount(new BigNumber(.01), DECIMALS), // How many ZRX the Maker will pay as a fee to the Relayer.
       // takerFee: ZeroEx.toBaseUnitAmount(new BigNumber(.000025), DECIMALS), // How many ZRX the Taker will pay as a fee to the Relayer.
-      makerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(tokenAmount), DECIMALS), // Base 18 decimals, The amount of ZRX token the Maker is offering.
-      takerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(ethAmount), DECIMALS), // Base 18 decimals, The amount of WETH token the Maker is requesting from the Taker.
-      expirationUnixTimestampSec: new BigNumber(Date.now() + 28800001), // When will the order expire (in unix time), Valid for up to 8 hours
+      makerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(sellTokenAmount), SELL_TOKEN_DECIMALS), // Base 18 decimals, The amount of sell token the Maker is offering.
+      takerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(buyTokenAmount), BUY_TOKEN_DECIMALS), // Base 18 decimals, The amount of buy token the Maker is requesting from the Taker.
+      expirationUnixTimestampSec: new BigNumber(Date.now() + 28800000), // When will the order expire (in unix time), Valid for up to 8 hours
     }
 
       // Submit order to relayer
@@ -142,16 +151,14 @@ export const submitDexBuyTokenOrder = (sellTokenCode: string, tokenAmount: strin
       await relayerClient.submitOrderAsync(signedOrder)
       console.log('DEX: orderHash is: ', orderHash)
 
-      Alert.alert('Order Submitted', 'Your order has been submitted')
-      //dispatch(isCreateDexBuyTokenOrderProcessing(false))  
       const orderbookRequest: OrderbookRequest = {
-        baseTokenAddress: TOKEN_CONTRACT_ADDRESS,
-        quoteTokenAddress: WETH_CONTRACT_ADDRESS,
+        baseTokenAddress: SELL_TOKEN_CONTRACT_ADDRESS,
+        quoteTokenAddress: BUY_TOKEN_CONTRACT_ADDRESS,
     }
     // Send orderbook request to relayer and receive an OrderbookResponse instance
     const orderbookResponse: OrderbookResponse = await relayerClient.getOrderbookAsync(orderbookRequest)
     console.log('DEX: orderbookResponse is: ', orderbookResponse)
-    Alert.alert(s.strings.dex_submit_order_success_title, s.strings_dex_submit_order_success_message)
+    Alert.alert(s.strings.dex_submit_order_success_title, s.strings.dex_submit_order_success_message)
   }
   catch (e) {
     console.log('DEX: submitDexBuyTokenOrder failed with error: ', e)
