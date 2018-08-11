@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { View, TouchableHighlight, Text } from 'react-native'
 import s from '../../../../../locales/strings.js'
 import { FormattedDexOrderInfo } from '../../../../../types.js'
-import styles, { styles as stylesRaw } from '../style.js'
+import styles, { styles as stylesRaw } from '../DexStyle.js'
 
 export class OrderBookResultComponent extends Component<OrderBookResultOwnProps, State> {
 

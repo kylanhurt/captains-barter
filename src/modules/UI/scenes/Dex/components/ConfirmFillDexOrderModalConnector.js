@@ -2,7 +2,7 @@
 import { connect } from 'react-redux'
 import type { Dispatch, State } from '../../../../ReduxTypes.js'
 import { ConfirmFillDexOrderModalComponent } from './ConfirmFillDexOrderModal.ui.js'
-import { fillDEXOrder, hideConfirmFillDexOrderModal } from '../action.js'
+import { fillDEXOrder, hideConfirmFillDexOrderModal } from '../DexAction.js'
 export const mapStateToProps = (state: State, ownProps) => {
   const isConfirmFillDexOrderModalVisible = state.ui.scenes.dex.isConfirmFillDexOrderModalVisible
   const isConfirmFillDexOrderSubmitProcessing = state.ui.scenes.dex.isConfirmFillDexOrderSubmitProcessing

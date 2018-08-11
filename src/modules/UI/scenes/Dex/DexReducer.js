@@ -7,7 +7,7 @@ import {
   DEX_CREATE_BUY_ORDER_PROCESSING,
   CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE,
   DEX_CONFIRM_FILL_ORDER_PROCESSING
-} from './action.js'
+} from './DexAction.js'
 import { combineReducers } from 'redux'
 import type { DirectoryTokenInfo, DEXOrder, FormattedDEXOrderInfo } from '../../../../types.js'
 import type { Action } from '../../../ReduxTypes.js'

@@ -9,7 +9,7 @@ import { PrimaryButton } from '../../components/Buttons'
 import Text from '../../components/FormattedText'
 import { Gradient } from '../../components/Gradient/Gradient.ui'
 import SafeAreaView from '../../components/SafeAreaView'
-import styles from './style.js'
+import styles from './DexStyle.js'
 
 export type Props = {
   selectedWalletId: string

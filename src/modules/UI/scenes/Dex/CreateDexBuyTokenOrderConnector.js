@@ -6,7 +6,7 @@ import type { Dispatch, State } from '../../../ReduxTypes'
 import {
   fetchTokenList,
   submitDexBuyTokenOrder  
-} from './action.js'
+} from './DexAction.js'
 import { CreateDexBuyTokenOrderComponent } from './CreateDexBuyTokenOrder.ui.js'
 import {
   getCurrencyAccountFiatBalanceFromWallet,
@@ -43,7 +43,8 @@ export const mapStateToProps = (state: State) => {
 
 export const mapDispatchToProps = (dispatch: Dispatch) => ({
   getTokenList: () => dispatch(fetchTokenList()),
-  submitDexBuyTokenOrder: (tokenCode: string, tokenAmount: string, ethAmount: string) => dispatch(submitDexBuyTokenOrder(tokenCode, tokenAmount, ethAmount))
+  submitDexBuyTokenOrder: (sellTokenCode: string, sellTokenAmount: string, buyTokenCode: string, buyTokenAmount: string) => 
+    dispatch(submitDexBuyTokenOrder(sellTokenCode, sellTokenAmount, buyTokenCode, buyTokenAmount))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateDexBuyTokenOrderComponent)

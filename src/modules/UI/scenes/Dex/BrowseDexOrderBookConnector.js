@@ -8,7 +8,7 @@ import {
 import {
   fetchTokenList,
   fetchDexOrderBook
-} from './action.js'
+} from './DexAction.js'
 
 import {
   getCurrencyAccountFiatBalanceFromWallet,

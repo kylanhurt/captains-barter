@@ -8,7 +8,7 @@ import { PrimaryButton, SecondaryButton, TertiaryButton } from '../../components
 import Text from '../../components/FormattedText'
 import { Gradient } from '../../components/Gradient/Gradient.ui'
 import SafeAreaView from '../../components/SafeAreaView'
-import styles, { styles as rawStyle } from './style.js'
+import styles, { styles as rawStyle } from './DexStyle.js'
 
 export type Props = {
 
@@ -27,7 +27,7 @@ export class DexBuySell extends Component<Props, State> {
           <ScrollView style={styles.container}>
             <View style={[styles.buySellButtonsArea]}>
               <PrimaryButton style={styles.buyButton} onPress={this._onPressBuy}>
-                <Text style={{textAlign: 'center', fontSize: 24, color: rawStyle.buyButtonText.color}}>{s.strings.dex_buy_tokens_button_title}</Text>
+                <Text style={{textAlign: 'center', fontSize: 24, color: rawStyle.buyButtonText.color}}>{s.strings.dex_trade_tokens_button_title}</Text>
               </PrimaryButton>
             </View>
             <View style={[styles.buySellButtonsArea]}>
