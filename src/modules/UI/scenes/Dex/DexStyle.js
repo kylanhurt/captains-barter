@@ -176,19 +176,18 @@ export const styles = {
     flexDirection: 'column',
     justifyContent: 'space-between',
     paddingHorizontal: 8,
-    paddingVertical: 4
-  },
-  orderBookResultAmountsArea:{
-    marginBottom: 6
+    paddingVertical: 8
   },
   orderBookResultAmountsText: {
-    fontSize: 14
+    fontSize: 14,
+    lineHeight: 20
   },
   orderBookResultExpirationArea: {
 
   },
   orderBookResultExpirationText: {
-    fontSize: 14
+    fontSize: 14,
+    lineHeight: 20
   },
   orderBookResultSeparator: {
     borderBottomWidth: 2,

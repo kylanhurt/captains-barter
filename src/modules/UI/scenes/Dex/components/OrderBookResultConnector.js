@@ -20,22 +20,27 @@ import type { DEXOrder, FormattedDEXOrderInfo } from '../../../../../types.js'
 import s from '../../../../../locales/strings.js'
 
 export const mapStateToProps = (state: State, ownProps) => {
-  const tokenInfo = state.ui.scenes.dex.tokenDirectory.find(item => ownProps.currencyCode)
+  const sellTokenInfo = state.ui.scenes.dex.tokenDirectory.find(item => ownProps.sellTokenCode)
+  const buyTokenInfo = state.ui.scenes.dex.tokenDirectory.find(item => ownProps.buyTokenCode)
+
   const order = ownProps.data.item
+  // change 18 decimal places
   const makerNativeTokenAmount = ZeroEx.toUnitAmount(order.makerTokenAmount, 18)
   const takerNativeTokenAmount = ZeroEx.toUnitAmount(order.takerTokenAmount, 18)
-  const exchangeRate = makerNativeTokenAmount.div(takerNativeTokenAmount)
-  const exchangeRateSyntax = exchangeRate.round(6).toString()
+  const forwardExchangeRate = makerNativeTokenAmount.div(takerNativeTokenAmount)
+  const forwardExchangeRateSyntax = forwardExchangeRate.round(6).toString()
+  const reverseExchangeRate = takerNativeTokenAmount.div(makerNativeTokenAmount)
+  const reverseExchangeRateSyntax = reverseExchangeRate.round(6).toString()
   const currentUnixTimestamp = Date.now()
   const expirationUnixTimestampSec = parseInt(order.expirationUnixTimestampSec)
   const timeDifference = expirationUnixTimestampSec / 1000 - currentUnixTimestamp / 1000
   const expiration = secondsToHms(timeDifference) || s.strings.dex_order_book_result_not_applicable
   return {
-    tokenInfo,
     makerNativeTokenAmount,
     takerNativeTokenAmount,
     expiration,
-    exchangeRateSyntax,
+    forwardExchangeRateSyntax,
+    reverseExchangeRateSyntax,
     order
   }
 }

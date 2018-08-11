@@ -41,6 +41,22 @@ export class ConfirmFillDexOrderModalComponent extends Component<ConfirmFillDexO
     this.props.hideConfirmFillDexOrderModal()
   }
 
+  renderOrderInfo = () => {
+    const formattedOrder = this.props.selectedDEXFormattedOrderToFill
+    const forwardSyntax = `${formattedOrder.makerNativeTokenAmount} ${formattedOrder.sellTokenCode} / ${formattedOrder.takerNativeTokenAmount} ${formattedOrder.buyTokenCode}`
+    const reverseSyntax = `${formattedOrder.forwardExchangeRateSyntax} ${formattedOrder.sellTokenCode} / ${formattedOrder.buyTokenCode} = ${formattedOrder.reverseExchangeRateSyntax} ${formattedOrder.buyTokenCode} / ${formattedOrder.sellTokenCode}`
+    const expirationSyntax = `${s.strings.dex_order_book_result_expiration} ${formattedOrder.expiration}`    
+    return (
+      <View style={styles.orderBookResultInfo}>
+        <View style={styles.confirmDexOrderInfoArea}>
+          <Text style={styles.confirmDexOrderAmountsText}>{forwardSyntax}</Text>
+          <Text style={styles.confirmDexOrderAmountsText}>{reverseSyntax}</Text>
+          <Text style={styles.confirmDexOrderExpirationText}>{expirationSyntax}</Text>
+        </View>
+      </View>       
+    )
+  }
+
   render () {
     const { isConfirmFillDexOrderModalVisible, isConfirmFillDexOrderSubmitProcessing, selectedDEXFormattedOrderToFill } = this.props
 
@@ -53,14 +69,7 @@ export class ConfirmFillDexOrderModalComponent extends Component<ConfirmFillDexO
           <Text>{s.strings.dex_confirm_fill_dex_order_title}</Text>
         </InteractiveModal.Title>
         <InteractiveModal.Body>
-          {selectedDEXFormattedOrderToFill && (
-            <View style={styles.orderBookResultInfo}>
-              <View style={styles.confirmDexOrderInfoArea}>
-                <Text style={styles.confirmDexOrderAmountsText}>{`${selectedDEXFormattedOrderToFill.makerNativeTokenAmount} ${selectedDEXFormattedOrderToFill.currencyCode} / ${selectedDEXFormattedOrderToFill.takerNativeTokenAmount} WETH`}</Text>
-                <Text style={styles.confirmDexOrderExpirationText}>{s.strings.dex_order_book_result_expiration} {selectedDEXFormattedOrderToFill.expiration}</Text>
-              </View>
-            </View>            
-          )}
+          {selectedDEXFormattedOrderToFill && this.renderOrderInfo()}
         </InteractiveModal.Body>
         <InteractiveModal.Footer>
           <InteractiveModal.Row>

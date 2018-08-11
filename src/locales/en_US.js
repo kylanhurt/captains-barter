@@ -321,7 +321,7 @@ const strings = {
   dex_create_order_address_title: 'Address:',
   dex_create_order_select_token_sell: 'Select Token Code to Sell',
   dex_create_order_select_token_buy: 'Select Token Code to Buy',
-  dex_browse_order_book_instructions: 'Select a token to purchase your WETH with and then click on an order to fill it:',
+  dex_browse_order_book_instructions: 'Select tokens to sell and purchase, then click on an order to fill it:',
   dex_order_book_result_expiration: 'Expiration:',
   dex_order_book_result_not_applicable: 'n/a',
   dex_confirm_fill_dex_order_title: 'Confirm DEX Order Fill',

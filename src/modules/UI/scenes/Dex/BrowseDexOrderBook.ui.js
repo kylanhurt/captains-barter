@@ -27,7 +27,7 @@ export type BrowseDexOrderBookOwnProps = {
   symbol: string,
   fiatSymbol: string,
   fiatBalance: string,
-  fetchDexOrderBook: (type: string, tokenCode: string) => void,
+  fetchDexOrderBook: (type: string, sellTokenCode: string, buyTokenCode?: string) => void,
   getTokenList: () => void
 }
 
@@ -37,14 +37,16 @@ export type BrowseDexOrderBookDispatchProps = {}
 export type BrowseDexOrderBookProps = BrowseDexOrderBookOwnProps & BrowseDexOrderBookStateProps & BrowseDexOrderBookDispatchProps
 
 export type BrowseDexOrderBookState = {
-  tokenCode: string,  
+  sellTokenCode: string,
+  buyTokenCode: string
 }
 
 export class BrowseDexOrderBookComponent extends Component<BrowseDexOrderBookProps, BrowseDexOrderBookState> {
   constructor (props: BrowseDexOrderBookProps) {
     super (props)
     this.state = {
-      tokenCode: ''
+      sellTokenCode: '',
+      buyTokenCode: ''
     }
   }
 
@@ -52,29 +54,47 @@ export class BrowseDexOrderBookComponent extends Component<BrowseDexOrderBookPro
     this.props.getTokenList()
   }
 
-  _onSelectToken = (currencyCode: string) => {
+  _onSelectSellToken = (sellTokenCode: string) => {
+    const { buyTokenCode } = this.state
     this.setState({
-      tokenCode: currencyCode
+      sellTokenCode
     }, () => {
       Actions.pop()
-      this.props.fetchDexOrderBook(BIDS, currencyCode)
+        if (sellTokenCode && buyTokenCode) {
+          this.props.fetchDexOrderBook(BIDS, sellTokenCode, this.state.buyTokenCode)
+        }
     })
   }
 
-  _onPressTokenCodeButton = () => {
+  _onPressSellTokenCodeButton = () => {
     Actions[CREATE_DEX_SELECT_TOKEN]({
-      tokenCode: this.state.tokenCode,
-      _onSelectToken: this._onSelectToken
+      tokenCode: this.state.sellTokenCode,
+      _onSelectToken: this._onSelectSellToken
     })
   }
 
-  _onSelectOrder = () => {
-    console.log('DEX: order selected')
+  _onSelectBuyToken = (buyTokenCode: string) => {
+    const { sellTokenCode } = this.state
+    this.setState({
+      buyTokenCode
+    }, () => {
+      Actions.pop()
+      if (sellTokenCode && buyTokenCode) {
+        this.props.fetchDexOrderBook(BIDS, sellTokenCode, buyTokenCode)
+      }
+    })
+  }
+
+  _onPressBuyTokenCodeButton = () => {
+    Actions[CREATE_DEX_SELECT_TOKEN]({
+      tokenCode: this.state.buyTokenCode,
+      _onSelectToken: this._onSelectBuyToken
+    })
   }
 
   renderOrderBookResult = (data) => {
     return (
-      <OrderBookResult data={data} currencyCode={this.state.tokenCode}/>
+      <OrderBookResult data={data} sellTokenCode={this.state.sellTokenCode} buyTokenCode={this.state.buyTokenCode} />
     )
   }
 
@@ -101,8 +121,13 @@ export class BrowseDexOrderBookComponent extends Component<BrowseDexOrderBookPro
             </View>
             <View style={styles.formArea}>
               <View style={[styles.textInputArea]}>
-                <TertiaryButton onPress={this._onPressTokenCodeButton}>
-                  <TertiaryButton.Text>{this.state.tokenCode || 'Find Token Code'}</TertiaryButton.Text>
+                <TertiaryButton onPress={this._onPressSellTokenCodeButton}>
+                  <TertiaryButton.Text>{this.state.sellTokenCode || s.strings.dex_create_order_select_token_sell}</TertiaryButton.Text>
+                </TertiaryButton>
+              </View>
+              <View style={[styles.textInputArea]}>
+                <TertiaryButton onPress={this._onPressBuyTokenCodeButton}>
+                  <TertiaryButton.Text>{this.state.buyTokenCode || s.strings.dex_create_order_select_token_buy}</TertiaryButton.Text>
                 </TertiaryButton>
               </View>
             </View>

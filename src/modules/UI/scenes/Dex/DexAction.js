@@ -175,7 +175,7 @@ export const updateCreateDexBuyTokenOrderProcessing = (isCreateDexBuyTokenOrderP
 }
 
 export const fetchTokenList = () => (dispatch: Dispatch, getState: GetState) => {
-
+  // will need to get API keys for GitHub
   fetch('https://raw.githubusercontent.com/kvhnuke/etherwallet/mercury/app/scripts/tokens/ethTokens.json', 
    {
       headers: {
@@ -200,13 +200,20 @@ export function updateTokenList (tokenDirectory: Array<Object>) {
   }
 }
 
-export const fetchDexOrderBook = (type: string, tokenCode: string) => async (dispatch: Dispatch, getState: GetState) => {
+export const fetchDexOrderBook = (type: string, sellTokenCode: string, buyTokenCode?: string) => async (dispatch: Dispatch, getState: GetState) => {
   const state = getState()
   
   const tokenDirectory = state.ui.scenes.dex.tokenDirectory
-  const tokenInfo = tokenDirectory.find(token => token.symbol === tokenCode )
-  if (!tokenInfo) console.log('DEX: Token contract address not found for ', tokenCode)
-  const TOKEN_CONTRACT_ADDRESS = tokenInfo.address.toLowerCase()
+
+  // get sellToken info
+  const sellTokenInfo = tokenDirectory.find(token => token.symbol === sellTokenCode )
+  if (!sellTokenInfo) console.log('DEX: Token contract address not found for ', sellTokenCode)
+  const SELL_TOKEN_CONTRACT_ADDRESS = sellTokenInfo.address.toLowerCase()
+
+  // get buyToken info
+  const buyTokenInfo = tokenDirectory.find(token => token.symbol === buyTokenCode )
+  if (!buyTokenInfo) console.log('DEX: Token contract address not found for ', buyTokenCode)
+  const BUY_TOKEN_CONTRACT_ADDRESS = buyTokenInfo.address.toLowerCase()
 
   const selectedWallet = getSelectedWallet(state)
   const selectedWalletId = selectedWallet.id
@@ -217,16 +224,15 @@ export const fetchDexOrderBook = (type: string, tokenCode: string) => async (dis
   // Submit order to relayer
   const relayerClient = new HttpClient(RELAYER_API_URL)
   console.log('DEX: Relayer client set')
-  const WETH_CONTRACT_ADDRESS = zeroEx.etherToken.getContractAddressIfExists() // The wrapped ETH token contract  
  
   const orderBookRequest: OrderbookRequest = {
-    baseTokenAddress: WETH_CONTRACT_ADDRESS,
-    quoteTokenAddress: TOKEN_CONTRACT_ADDRESS
+    baseTokenAddress: BUY_TOKEN_CONTRACT_ADDRESS,
+    quoteTokenAddress: SELL_TOKEN_CONTRACT_ADDRESS
   }
 
   const orderBookResponse: OrderbookResponse = await relayerClient.getOrderbookAsync(orderBookRequest)
   console.log('DEX: orderBookResponse is: ', orderBookResponse)
-  dispatch(updateDexOrderBookBids(orderBookResponse.bids))
+  dispatch(updateDexOrderBookBids(orderBookResponse.asks))
 }
 
 export function updateDexOrderBookBids (orderBookBids: Array<any>) {
@@ -269,6 +275,8 @@ export const fillDEXOrder = () => async (dispatch: Dispatch, getState: GetState)
     if (!web3Engine) web3Engine = startWeb3Engine(selectedWalletId, state)
     const zeroEx = new ZeroEx(providers[selectedWalletId], configs)
     const web3Wrapper = new Web3Wrapper(web3Engine)
+
+    // get sell token info
     const WETH_CONTRACT_ADDRESS = zeroEx.etherToken.getContractAddressIfExists() // The wrapped ETH token contract  
 
     // check to see if there's enough WETH to fill the order
@@ -277,18 +285,6 @@ export const fillDEXOrder = () => async (dispatch: Dispatch, getState: GetState)
     const WETHBalanceUnitAmount = ZeroEx.toUnitAmount(WETHBalanceBigNumber, DECIMALS)
     const WETHOrderAmount = order.takerTokenAmount
     const WETHOrderUnitAmount = ZeroEx.toUnitAmount(WETHOrderAmount, DECIMALS)
-
-    // if there isn't enough WETH balance to fund the fulfillment then do am ETH -> WETH conversion routine
-    /* if (WETHOrderUnitAmount.gt(WETHBalanceUnitAmount)) {
-      console.log('DEX: convert ETH to WETH')
-      // const WETH_DECIMAL_STRING = DECIMALS.toString()
-      // const WETH_MULTIPLIER = 1 + '0'.repeat(WETH_DECIMAL_STRING)
-      const WETHDeficit =  WETHOrderUnitAmount.sub(WETHBalanceUnitAmount)
-      console.log('DEX: WETHDeficit is: ', WETHDeficit)    
-      const convertEthTxHash = await zeroEx.etherToken.depositAsync(WETH_CONTRACT_ADDRESS, WETHDeficit, takerAddress)
-      console.log('DEX: convertEthTxHash is: ',  convertEthTxHash)    
-      await zeroEx.awaitTransactionMinedAsync(convertEthTxHash)
-    } */
 
     // check WETH allowance
     const allowanceAmount = await zeroEx.token.getProxyAllowanceAsync(WETH_CONTRACT_ADDRESS, takerAddress)

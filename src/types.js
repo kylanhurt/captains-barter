@@ -213,7 +213,9 @@ export type DEXOrder = {
 export type FormattedDEXOrderInfo = {
   makerNativeTokenAmount: string,
   takerNativeTokenAmount: string,  
-  currencyCode: string,
-  exchangeRate: string,
+  sellTokenCode: string,
+  buyTokenCode: string,
+  forwardExchangeRate: string,
+  reversExchangeRate: string,
   expiration: string
 }
