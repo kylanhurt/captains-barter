@@ -24,6 +24,7 @@ export const CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE = 'CONFIRM_FILL_DEX_ORDER_MODA
 export const CONFIRM_FILL_DEX_ORDER_PROCESSING = 'CONFIRM_FILL_DEX_ORDER_PROCESSING'
 export const DEX_CREATE_BUY_ORDER_PROCESSING = 'DEX_CREATE_BUY_ORDER_PROCESSING'
 export const DEX_CONFIRM_FILL_ORDER_PROCESSING = 'DEX_CONFIRM_FILL_ORDER_PROCESSING'
+export const DEX_CREATE_BUY_ORDER_PROGRESS = 'DEX_CREATE_BUY_ORDER_PROGRESS'
 
 const NETWORK_ID = 1
 
@@ -61,7 +62,7 @@ export const startWeb3Engine = (walletId: string, state: State) => {
 }
 
 export const submitDexBuyTokenOrder = (sellTokenCode: string, sellTokenAmount: string, buyTokenCode: string, buyTokenAmount: string) => async (dispatch: Dispatch, getState: GetState) => {
-  dispatch(updateCreateDexBuyTokenOrderProcessing(true))
+  dispatch(startCreateDexBuyTokenOrderProcessing(true))
   try {
     const state = getState()
     const tokenDirectory = state.ui.scenes.dex.tokenDirectory
@@ -83,6 +84,7 @@ export const submitDexBuyTokenOrder = (sellTokenCode: string, sellTokenAmount: s
     const zeroEx = new ZeroEx(providers[selectedWalletId], configs)
     const web3Wrapper = new Web3Wrapper(engine)
     // Addresses
+    dispatch(updateCreateDexBuyTokenOrderProgress(s.strings.dex_submit_order_progress_available_addresses))
     const accounts = await web3Wrapper.getAvailableAddressesAsync();
     console.log(accounts)
 
@@ -105,7 +107,7 @@ export const submitDexBuyTokenOrder = (sellTokenCode: string, sellTokenAmount: s
     const EXCHANGE_CONTRACT_ADDRESS = zeroEx.exchange.getContractAddress()  
     
     const makerAddress = selectedWallet.receiveAddress.publicAddress
-
+    dispatch(updateCreateDexBuyTokenOrderProgress(s.strings.dex_submit_order_progress_setting_allowance))
     const setMakerAllowTxHash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(SELL_TOKEN_CONTRACT_ADDRESS, makerAddress)
     await zeroEx.awaitTransactionMinedAsync(setMakerAllowTxHash)
 
@@ -143,11 +145,13 @@ export const submitDexBuyTokenOrder = (sellTokenCode: string, sellTokenAmount: s
       const orderHash = ZeroEx.getOrderHashHex(order)
       // Signing orderHash -> ecSignature
       const shouldAddPersonalMessagePrefix = false
+      dispatch(updateCreateDexBuyTokenOrderProgress(s.strings.dex_submit_order_progress_signing_order))
       const ecSignature = await zeroEx.signOrderHashAsync(orderHash, makerAddress, shouldAddPersonalMessagePrefix)
       const signedOrder = {
         ...order,
         ecSignature,
       }
+      dispatch(updateCreateDexBuyTokenOrderProgress(s.strings.dex_submit_order_progress_submitting))      
       await relayerClient.submitOrderAsync(signedOrder)
       console.log('DEX: orderHash is: ', orderHash)
 
@@ -164,13 +168,28 @@ export const submitDexBuyTokenOrder = (sellTokenCode: string, sellTokenAmount: s
     console.log('DEX: submitDexBuyTokenOrder failed with error: ', e)
     Alert.alert(s.strings.dex_submit_order_failure_title, s.strings.dex_submit_order_failure_message)
   }
-  dispatch(updateCreateDexBuyTokenOrderProcessing(false))
+  dispatch(finishCreateDexBuyTokenOrderProcessing(false))
 }
 
-export const updateCreateDexBuyTokenOrderProcessing = (isCreateDexBuyTokenOrderProcessing: boolean) => {
+export const startCreateDexBuyTokenOrderProcessing = (isCreateDexBuyTokenOrderProcessing: true) => {
   return {
     type: DEX_CREATE_BUY_ORDER_PROCESSING,
     data: { isCreateDexBuyTokenOrderProcessing }
+  }
+}
+
+
+export const finishCreateDexBuyTokenOrderProcessing = (isCreateDexBuyTokenOrderProcessing: false) => {
+  return {
+    type: DEX_CREATE_BUY_ORDER_PROCESSING,
+    data: { isCreateDexBuyTokenOrderProcessing }
+  }
+}
+
+export const updateCreateDexBuyTokenOrderProgress = (createDexBuyTokenOrderProgress: string) => {
+  return {
+    type: DEX_CREATE_BUY_ORDER_PROGRESS,
+    data: { createDexBuyTokenOrderProgress }
   }
 }
 

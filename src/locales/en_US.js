@@ -312,6 +312,13 @@ const strings = {
   dex_browse_order_book_title: 'Order Book',
   dex_submit_order_instructions: 'Submit your order below:',
   dex_submit_order_button_title: 'Submit Order',
+
+  dex_submit_order_progress_starting: 'Starting submission...',
+  dex_submit_order_progress_available_addresses: 'Getting addresses...',
+  dex_submit_order_progress_setting_allowance: 'Settings allowance...',
+  dex_submit_order_progress_signing_order: 'Signing order...',
+  dex_submit_order_progress_submitting: 'Submitting order...',
+
   dex_submit_order_success_title: 'Order Submitted',
   dex_submit_order_success_message: 'Your order has been successfully submitted to the network',
   dex_submit_order_failure_title: 'Order Failed',  

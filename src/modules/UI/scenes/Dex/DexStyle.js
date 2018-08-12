@@ -226,6 +226,13 @@ export const styles = {
   confirmFillDexOrderModalSubmitButtonText: {
     color: THEME.COLORS.WHITE
   },
+  buttonActivityIndicator: {
+    height: 18,
+    width: 18
+  },
+  activePrimaryButton: {
+    backgroundColor: THEME.COLORS.PRIMARY_BUTTON_TOUCHED
+  },
   underlayColor: {
     color: THEME.COLORS.GRAY_4
   },
