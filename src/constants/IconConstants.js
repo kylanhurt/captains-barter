@@ -7,6 +7,7 @@ export const CHECK_CIRCLE = 'check'
 // Entypo
 export const ENTYPO = 'entypo'
 export const THREE_DOT_MENU = 'dots-three-vertical'
+export const ARROW_DOWN = 'arrow-down'
 
 // FontAwesome
 export const FONT_AWESOME = 'fontAwesome'
@@ -27,6 +28,7 @@ export const UNLOCKED_ICON = 'ios-unlock-outline'
 export const LOCKED_ICON = 'ios-lock-outline'
 export const EYE_ICON = 'eye'
 export const MAIL = 'ios-mail-outline'
+export const ARROW_DOWN_ICON = 'ios-arrow-round-down'
 
 // Material
 export const MATERIAL_ICONS = 'material'

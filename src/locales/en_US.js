@@ -325,6 +325,10 @@ const strings = {
   dex_order_book_result_expiration: 'Expiration:',
   dex_order_book_result_not_applicable: 'n/a',
   dex_confirm_fill_dex_order_title: 'Confirm DEX Order Fill',
+  dex_fill_order_success_title: 'Fill Order Success',
+  dex_fill_order_success_message: 'You have successfully filled the order, please allow a few minutes for your balance to reflect the change',
+  dex_fill_order_failure_title: 'Fill Order Failure',
+  dex_fill_order_failure_message: 'Your fill order has failed. Please check your input and balance and try again',
   dex_submit_confirm_dex_order: 'Confirm Order',
 
   // export scene

@@ -33,7 +33,16 @@ export const styles = {
     fontSize: 22,
     color: THEME.COLORS.WHITE
   },
-
+  arrowDownIconWrapper: {
+    width: '100%',
+    alignItems: 'center'
+  },
+  arrowDownIcon: {
+    backgroundColor: THEME.COLORS.TRANSPARENT,
+    fontSize: 42,
+    color: THEME.COLORS.SECONDARY,
+    marginBottom: 6
+  },
   headerRow: {
     padding: 12,
     flexDirection: 'row',

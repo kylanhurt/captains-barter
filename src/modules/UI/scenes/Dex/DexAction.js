@@ -162,7 +162,7 @@ export const submitDexBuyTokenOrder = (sellTokenCode: string, sellTokenAmount: s
   }
   catch (e) {
     console.log('DEX: submitDexBuyTokenOrder failed with error: ', e)
-    Alert.alert(s.strings.dex_submit_order_failure_title, s.strings_dex_submit_order_failure_message)
+    Alert.alert(s.strings.dex_submit_order_failure_title, s.strings.dex_submit_order_failure_message)
   }
   dispatch(updateCreateDexBuyTokenOrderProcessing(false))
 }
@@ -323,9 +323,11 @@ export const fillDEXOrder = () => async (dispatch: Dispatch, getState: GetState)
     console.log('DEX: fillTxHash is: ', fillTxHash);
     const txReceipt = await zeroEx.awaitTransactionMinedAsync(fillTxHash)
     console.log('DEX: order fulfillment transaction completed!, txReceipt is: ', txReceipt)
+    Alert.alert(s.strings.dex_fill_order_success_title, s.strings.dex_fill_order_success_message)
   }
   catch (e) {
     console.log('DEX Order Fill error', e)
+    Alert.alert(s.strings.dex.dex_fill_order_failure_title, s.strings.dex_fill_order_failure_message)    
   }
   dispatch(updateConfirmFillDexOrderSubmitProcessing(false))
 }

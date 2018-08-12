@@ -5,11 +5,16 @@ import { ScrollView, View } from 'react-native'
 import s from '../../../../locales/strings.js'
 import { Actions } from 'react-native-router-flux'
 import {
-  CREATE_DEX_SELECT_TOKEN, BIDS, ASKS
+  CREATE_DEX_SELECT_TOKEN,
+  BIDS,
+  ASKS,
+  ENTYPO,
+  ARROW_DOWN
 } from '../../../../constants/indexConstants.js'
 import SearchResults from '../../components/SearchResults'
 import OrderBookResult from './components/OrderBookResultConnector.js'
 import { TertiaryButton } from '../../components/Modals/components/TertiaryButton.ui.js'
+import { Icon } from '../../components/Icon/Icon.ui'
 import Text from '../../components/FormattedText'
 import Gradient from '../../components/Gradient/Gradient.ui.js'
 import SafeAreaView from '../../components/SafeAreaView'
@@ -124,6 +129,9 @@ export class BrowseDexOrderBookComponent extends Component<BrowseDexOrderBookPro
                 <TertiaryButton onPress={this._onPressSellTokenCodeButton}>
                   <TertiaryButton.Text>{this.state.sellTokenCode || s.strings.dex_create_order_select_token_sell}</TertiaryButton.Text>
                 </TertiaryButton>
+              </View>
+              <View style={styles.arrowDownIconWrapper}>
+                <Icon style={styles.arrowDownIcon} name={ARROW_DOWN} type={ENTYPO} />
               </View>
               <View style={[styles.textInputArea]}>
                 <TertiaryButton onPress={this._onPressBuyTokenCodeButton}>
