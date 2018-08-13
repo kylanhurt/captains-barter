@@ -3,9 +3,10 @@
 import { connect } from 'react-redux'
 
 import type { Dispatch, State } from '../../../ReduxTypes'
+import { getCurrencyConverter } from '../../../Core/selectors.js'
 import {
   fetchTokenList,
-  submitDexBuyTokenOrder  
+  submitDexBuyTokenOrder
 } from './DexAction.js'
 import { CreateDexBuyTokenOrderComponent } from './CreateDexBuyTokenOrder.ui.js'
 import {
@@ -17,29 +18,33 @@ import {
 export const mapStateToProps = (state: State) => {
   const selectedWalletId = state.ui.wallets.selectedWalletId
   const wallet = state.ui.wallets.byId[selectedWalletId]
+  const isoFiatCurrencyCode = wallet.isoFiatCurrencyCode
+  const fiatCurrencyCode = wallet.fiatCurrencyCode
+  const fiatSymbol = getFiatSymbol(fiatCurrencyCode)
   const currencyCode = wallet.currencyCode
   const walletName = wallet.name
   const balanceInfo = getCryptoBalanceInfoFromWallet(wallet, currencyCode, state)
   const balance = balanceInfo.formattedCryptoBalance
   const symbol = balanceInfo.symbol
   const receiveAddress = wallet.receiveAddress.publicAddress
-  const fiatBalance = getCurrencyAccountFiatBalanceFromWallet(wallet, currencyCode, state)
-  const settings = state.ui.settings
-  const fiatSymbol = settings.defaultFiat ? getFiatSymbol(settings.defaultFiat) : ''
+
   const isCreateDexBuyTokenOrderProcessing = state.ui.scenes.dex.isCreateDexBuyTokenOrderProcessing
   const createDexBuyTokenOrderProgress = state.ui.scenes.dex.createDexBuyTokenOrderProgress
+  const currencyConverter = getCurrencyConverter(state)
   return {
     selectedWalletId,
     wallet,
     currencyCode,
+    isoFiatCurrencyCode,
+    fiatCurrencyCode,
     walletName,
     balance,
     symbol,
     receiveAddress,
-    fiatBalance,
     fiatSymbol,
     isCreateDexBuyTokenOrderProcessing,
-    createDexBuyTokenOrderProgress
+    createDexBuyTokenOrderProgress,
+    currencyConverter
   }
 }
 

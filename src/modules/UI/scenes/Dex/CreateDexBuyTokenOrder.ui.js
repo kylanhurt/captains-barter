@@ -13,7 +13,7 @@ import { PrimaryButton } from '../../components/Modals/components/PrimaryButton.
 import Text from '../../components/FormattedText'
 import { Gradient } from '../../components/Gradient/Gradient.ui.js'
 import SafeAreaView from '../../components/SafeAreaView'
-import styles from './DexStyle.js'
+import styles, { styles as rawStyles } from './DexStyle.js'
 
 export type CreateDexBuyTokenOrderOwnProps = {
   selectedWalletId: string,
@@ -21,7 +21,6 @@ export type CreateDexBuyTokenOrderOwnProps = {
   currencyCode: string,
   walletName: string,
   balance: null,
-  fiatCurrencyCode: string,
   receiveAddress: string,
   symbol: string,
   fiatSymbol: string,
@@ -113,7 +112,28 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
   }
 
   render () {
-    const { isCreateDexBuyTokenOrderProcessing, createDexBuyTokenOrderProgress } = this.props
+    const {
+      isCreateDexBuyTokenOrderProcessing,
+      createDexBuyTokenOrderProgress,
+      currencyConverter,
+      isoFiatCurrencyCode,
+      fiatSymbol
+    } = this.props
+
+    const {
+      buyTokenCode,
+      buyTokenAmount,
+      sellTokenCode,
+      sellTokenAmount
+    } = this.state
+
+    const calculatedSellAmountInFiat = currencyConverter.convertCurrency(sellTokenCode, isoFiatCurrencyCode, sellTokenAmount)
+    const fiatSellBalanceAmountFormatted = intl.formatNumber(calculatedSellAmountInFiat || 0, { toFixed: 2 })
+    const sellFiatBalanceString =  fiatSymbol ? `${fiatSymbol} ${fiatSellBalanceAmountFormatted}` : `${fiatSellBalanceAmountFormatted} ${fiatCurrencyCode}`
+
+    const calculatedBuyAmountInFiat = currencyConverter.convertCurrency(buyTokenCode, isoFiatCurrencyCode, buyTokenAmount)
+    const fiatBuyBalanceAmountFormatted = intl.formatNumber(calculatedBuyAmountInFiat || 0, { toFixed: 2 })
+    const buyFiatBalanceString = fiatSymbol ? `${fiatSymbol} ${fiatBuyBalanceAmountFormatted}` : `${fiatSellBalanceAmountFormatted} ${fiatCurrencyCode}`
     return (
       <SafeAreaView>
         <View style={[styles.scene]}>
@@ -128,35 +148,45 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
             <View style={styles.formArea}>
               <View style={[styles.textInputArea]}>
                 <TertiaryButton onPress={this._onPressSellTokenCodeButton}>
-                  <TertiaryButton.Text>{this.state.sellTokenCode || s.strings.dex_create_order_select_token_sell}</TertiaryButton.Text>
+                  <TertiaryButton.Text>{sellTokenCode || s.strings.dex_create_order_select_token_sell}</TertiaryButton.Text>
                 </TertiaryButton>
               </View>
-              <View style={[styles.textInputArea]}>
-                <FormField
-                  style={[styles.sellTokenAmountInput]}
-                  value={this.state.sellTokenAmount}
-                  keyboardType={'decimal-pad'}
-                  label={s.strings.dex_buy_tokens_enter_token_amount_to_sell}
-                  returnKeyType={'next'}
-                  onChangeText={this._onChangeSellTokenAmountInput}
-                />
+              <View style={[styles.textInputArea, styles.tokenAmountInputArea]}>
+                <View style={styles.tokenAmountInput}>
+                  <FormField
+                    style={{}}
+                    value={this.state.sellTokenAmount}
+                    keyboardType={'decimal-pad'}
+                    label={s.strings.dex_buy_tokens_enter_token_amount_to_sell}
+                    returnKeyType={'next'}
+                    onChangeText={this._onChangeSellTokenAmountInput}
+                  />
+                </View>
+                <View style={styles.exchangeRateArea}>
+                  <Text style={styles.exchangeRateText}>{calculatedSellAmountInFiat ? `~ ${sellFiatBalanceString}` : ''}</Text>
+                </View>
               </View>
             </View>
             <View style={[styles.formArea, {marginVertical: 18}]}>
               <View style={[styles.textInputArea]}>
                 <TertiaryButton onPress={this._onPressBuyTokenCodeButton}>
-                  <TertiaryButton.Text>{this.state.buyTokenCode || s.strings.dex_create_order_select_token_buy}</TertiaryButton.Text>
+                  <TertiaryButton.Text>{buyTokenCode || s.strings.dex_create_order_select_token_buy}</TertiaryButton.Text>
                 </TertiaryButton>
               </View>
-              <View style={[styles.textInputArea]}>
-                <FormField
-                  style={[styles.buyTokenAmountInput]}
-                  value={this.state.buyTokenAmount}
-                  label={s.strings.dex_buy_tokens_enter_weth_amount_to_purchase_with}
-                  returnKeyType={'done'}
-                  keyboardType={'decimal-pad'}
-                  onChangeText={this._onChangeBuyTokenAmountInput}
-                />
+              <View style={[styles.textInputArea, styles.tokenAmountInputArea]}>
+                <View style={styles.tokenAmountInput}>
+                  <FormField
+                    style={{}}
+                    value={this.state.buyTokenAmount}
+                    label={s.strings.dex_buy_tokens_enter_weth_amount_to_purchase_with}
+                    returnKeyType={'done'}
+                    keyboardType={'decimal-pad'}
+                    onChangeText={this._onChangeBuyTokenAmountInput}
+                  />
+                </View>
+                <View style={styles.exchangeRateArea}>
+                  <Text style={styles.exchangeRateText}>{calculatedBuyAmountInFiat ? `~ ${buyFiatBalanceString}` : ''}</Text>
+                </View>                
               </View>
             </View>            
             <View style={[styles.buttonsArea]}>

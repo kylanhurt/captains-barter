@@ -73,8 +73,20 @@ export const styles = {
     textAlign: 'center',
     lineHeight: 24
   },
-  textInputArea: {
-    height: 70
+  tokenAmountInputArea: {
+    flexDirection: 'column'
+  },
+  tokenAmountInput: {
+    flex: 1
+  },
+  exchangeRateArea: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1
+  },
+  exchangeRateText: {
+    height: 32,
+    fontSize: 16
   },
   errorMessageArea: {
     height: 16,
@@ -92,7 +104,6 @@ export const styles = {
     paddingVertical: 4,
     flex: 1
   },
-
   buttonText: {
     color: THEME.COLORS.WHITE,
     fontSize: 18
