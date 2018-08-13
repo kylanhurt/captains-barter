@@ -315,7 +315,7 @@ const strings = {
 
   dex_submit_order_progress_starting: 'Starting submission...',
   dex_submit_order_progress_available_addresses: 'Getting addresses...',
-  dex_submit_order_progress_setting_allowance: 'Settings allowance...',
+  dex_submit_order_progress_setting_allowance: 'Setting allowance...',
   dex_submit_order_progress_signing_order: 'Signing order...',
   dex_submit_order_progress_submitting: 'Submitting order...',
 
