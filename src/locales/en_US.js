@@ -312,6 +312,13 @@ const strings = {
   dex_browse_order_book_title: 'Order Book',
   dex_submit_order_instructions: 'Submit your order below:',
   dex_submit_order_button_title: 'Submit Order',
+
+  dex_submit_order_progress_starting: 'Starting submission...',
+  dex_submit_order_progress_available_addresses: 'Getting addresses...',
+  dex_submit_order_progress_setting_allowance: 'Setting allowance...',
+  dex_submit_order_progress_signing_order: 'Signing order...',
+  dex_submit_order_progress_submitting: 'Submitting order...',
+
   dex_submit_order_success_title: 'Order Submitted',
   dex_submit_order_success_message: 'Your order has been successfully submitted to the network',
   dex_submit_order_failure_title: 'Order Failed',  
@@ -325,6 +332,10 @@ const strings = {
   dex_order_book_result_expiration: 'Expiration:',
   dex_order_book_result_not_applicable: 'n/a',
   dex_confirm_fill_dex_order_title: 'Confirm DEX Order Fill',
+  dex_fill_order_success_title: 'Fill Order Success',
+  dex_fill_order_success_message: 'You have successfully filled the order, please allow a few minutes for your balance to reflect the change',
+  dex_fill_order_failure_title: 'Fill Order Failure',
+  dex_fill_order_failure_message: 'Your fill order has failed. Please check your input and balance and try again',
   dex_submit_confirm_dex_order: 'Confirm Order',
 
   // export scene

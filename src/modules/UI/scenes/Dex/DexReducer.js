@@ -5,9 +5,11 @@ import {
   DEX_ORDER_BOOK_BIDS,
   DEX_ORDER_BOOK_ASKS,
   DEX_CREATE_BUY_ORDER_PROCESSING,
+  DEX_CREATE_BUY_ORDER_PROGRESS,
   CONFIRM_FILL_DEX_ORDER_MODAL_VISIBLE,
   DEX_CONFIRM_FILL_ORDER_PROCESSING
 } from './DexAction.js'
+import s from '../../../../locales/strings.js'
 import { combineReducers } from 'redux'
 import type { DirectoryTokenInfo, DEXOrder, FormattedDEXOrderInfo } from '../../../../types.js'
 import type { Action } from '../../../ReduxTypes.js'
@@ -43,6 +45,21 @@ export const isCreateDexBuyTokenOrderProcessing = (state: boolean = false, actio
   switch (action.type) {
     case DEX_CREATE_BUY_ORDER_PROCESSING:
       return action.data.isCreateDexBuyTokenOrderProcessing
+    default:
+      return state
+  }
+}
+
+export const createDexBuyTokenOrderProgress = (state: string = '', action: Action) => {
+  switch (action.type) {
+    case DEX_CREATE_BUY_ORDER_PROGRESS:
+      return action.data.createDexBuyTokenOrderProgress
+    case DEX_CREATE_BUY_ORDER_PROCESSING:
+      if (action.data.isCreateDexBuyTokenOrderProcessing) {
+        return s.strings.dex_submit_order_progress_starting
+      } else {
+        return ''
+      }
     default:
       return state
   }
@@ -88,6 +105,7 @@ export const dex = combineReducers({
   orderBookBids,
   orderBookAsks,
   isCreateDexBuyTokenOrderProcessing,
+  createDexBuyTokenOrderProgress,
   isConfirmFillDexOrderModalVisible,
   isConfirmFillDexOrderSubmitProcessing,
   selectedDEXOrderToFill,

@@ -113,7 +113,7 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
   }
 
   render () {
-    const { isCreateDexBuyTokenOrderProcessing } = this.props
+    const { isCreateDexBuyTokenOrderProcessing, createDexBuyTokenOrderProgress } = this.props
     return (
       <SafeAreaView>
         <View style={[styles.scene]}>
@@ -160,9 +160,11 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
               </View>
             </View>            
             <View style={[styles.buttonsArea]}>
-              <PrimaryButton style={styles.submitButton} onPress={this._onSubmit}>
+              <PrimaryButton style={[styles.submitButton]} onPress={this._onSubmit} disabled={isCreateDexBuyTokenOrderProcessing}>
                 {isCreateDexBuyTokenOrderProcessing ? (
-                  <ActivityIndicator size={'small'} />
+                  <PrimaryButton.Text>
+                    <ActivityIndicator style={styles.buttonActivityIndicator} size={'small'} /> {createDexBuyTokenOrderProgress}
+                  </PrimaryButton.Text>  
                  ) : (
                  <PrimaryButton.Text>{s.strings.dex_submit_order_button_title}</PrimaryButton.Text>
                  )}
