@@ -230,9 +230,6 @@ export const styles = {
     height: 18,
     width: 18
   },
-  activePrimaryButton: {
-    backgroundColor: THEME.COLORS.PRIMARY_BUTTON_TOUCHED
-  },
   underlayColor: {
     color: THEME.COLORS.GRAY_4
   },

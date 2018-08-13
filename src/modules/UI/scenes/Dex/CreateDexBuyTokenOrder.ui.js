@@ -160,7 +160,7 @@ export class CreateDexBuyTokenOrderComponent extends Component<CreateDexBuyToken
               </View>
             </View>            
             <View style={[styles.buttonsArea]}>
-              <PrimaryButton style={[styles.submitButton, isCreateDexBuyTokenOrderProcessing && styles.activePrimaryButton]} onPress={this._onSubmit}>
+              <PrimaryButton style={[styles.submitButton]} onPress={this._onSubmit} disabled={isCreateDexBuyTokenOrderProcessing}>
                 {isCreateDexBuyTokenOrderProcessing ? (
                   <PrimaryButton.Text>
                     <ActivityIndicator style={styles.buttonActivityIndicator} size={'small'} /> {createDexBuyTokenOrderProgress}

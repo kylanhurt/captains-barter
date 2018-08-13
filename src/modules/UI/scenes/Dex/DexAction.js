@@ -151,7 +151,7 @@ export const submitDexBuyTokenOrder = (sellTokenCode: string, sellTokenAmount: s
         ...order,
         ecSignature,
       }
-      dispatch(updateCreateDexBuyTokenOrderProgress(s.strings.dex_submit_order_progress_submitting))      
+      //dispatch(updateCreateDexBuyTokenOrderProgress(s.strings.dex_submit_order_progress_submitting))      
       await relayerClient.submitOrderAsync(signedOrder)
       console.log('DEX: orderHash is: ', orderHash)
 
