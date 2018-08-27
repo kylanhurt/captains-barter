@@ -27,7 +27,7 @@ export const mapStateToProps = (state: State) => {
   const balance = balanceInfo.formattedCryptoBalance
   const symbol = balanceInfo.symbol
   const receiveAddress = wallet.receiveAddress.publicAddress
-
+  const fiatBalance = getCurrencyAccountFiatBalanceFromWallet(wallet, currencyCode, state)
   const isCreateDexBuyTokenOrderProcessing = state.ui.scenes.dex.isCreateDexBuyTokenOrderProcessing
   const createDexBuyTokenOrderProgress = state.ui.scenes.dex.createDexBuyTokenOrderProgress
   const currencyConverter = getCurrencyConverter(state)
@@ -37,6 +37,7 @@ export const mapStateToProps = (state: State) => {
     currencyCode,
     isoFiatCurrencyCode,
     fiatCurrencyCode,
+    fiatBalance,
     walletName,
     balance,
     symbol,

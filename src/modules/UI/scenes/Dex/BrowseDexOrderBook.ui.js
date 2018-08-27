@@ -145,7 +145,7 @@ export class BrowseDexOrderBookComponent extends Component<BrowseDexOrderBookPro
                 onRegularSelectFxn={this._onSelectOrder}
                 regularArray={orderBookBids}
                 containerStyle={[styles.orderBookResultsContainer]}
-                keyExtractor={this.keyExtractor}            
+                keyExtractor={this.keyExtractor}
               />
             </ScrollView>
             <View style={styles.bottomPaddingForKeyboard} />

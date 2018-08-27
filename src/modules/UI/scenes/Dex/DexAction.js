@@ -88,8 +88,6 @@ export const submitDexBuyTokenOrder = (sellTokenCode: string, sellTokenAmount: s
     const accounts = await web3Wrapper.getAvailableAddressesAsync();
     console.log(accounts)
 
-
-
     const sellTokenInfo = tokenDirectory.find(token => token.symbol === sellTokenCode )
     if (!sellTokenInfo) console.log('DEX: Token contract address not found for ', sellTokenCode)
     const SELL_TOKEN_CONTRACT_ADDRESS = sellTokenInfo.address.toLowerCase()
@@ -251,8 +249,7 @@ export const fetchDexOrderBook = (type: string, sellTokenCode: string, buyTokenC
 
   const orderBookResponse: OrderbookResponse = await relayerClient.getOrderbookAsync(orderBookRequest)
   console.log('DEX: orderBookResponse is: ', orderBookResponse)
-  dispatch(updateDexOrderBookBids(orderBookResponse.asks))
-}
+  dispatch(updateDexOrderBookBids(orderBookResponse.bids))}
 
 export function updateDexOrderBookBids (orderBookBids: Array<any>) {
   return {
@@ -303,9 +300,9 @@ export const fillDEXOrder = () => async (dispatch: Dispatch, getState: GetState)
     // check to see if there's enough tokens to fill the order
     const takerBalance = selectedWallet.nativeBalances[takerTokenInfo.symbol]
     const takerBalanceBigNumber = new BigNumber(takerBalance)
-    const takerBalanceUnitAmount = ZeroEx.toUnitAmount(takerBalanceBigNumber, DECIMALS)
+    const takerBalanceUnitAmount = ZeroEx.toUnitAmount(takerBalanceBigNumber, takerTokenInfo.decimal) // needs changing
     const takerOrderAmount = order.takerTokenAmount
-    const takerOrderUnitAmount = ZeroEx.toUnitAmount(takerOrderAmount, DECIMALS)
+    const takerOrderUnitAmount = ZeroEx.toUnitAmount(takerOrderAmount, takerTokenInfo.decimal) // needs changing
 
     // check token allowance
     const allowanceAmount = await zeroEx.token.getProxyAllowanceAsync(TAKER_CONTRACT_ADDRESS, takerAddress)

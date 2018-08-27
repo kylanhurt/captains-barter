@@ -2,6 +2,7 @@
 
 import { connect } from 'react-redux'
 import type { Dispatch, State } from '../../../ReduxTypes.js'
+import { getCurrencyConverter } from '../../../Core/selectors.js'
 import {
   BrowseDexOrderBookComponent
 } from './BrowseDexOrderBook.ui.js'
@@ -30,6 +31,7 @@ export const mapStateToProps = (state: State) => {
   const fiatSymbol = settings.defaultFiat ? getFiatSymbol(settings.defaultFiat) : ''
   const orderBookBids = state.ui.scenes.dex.orderBookBids
   const isConfirmFillDexOrderModalVisible =  state.ui.scenes.dex.isConfirmFillDexOrderModalVisible
+  const currencyConverter = getCurrencyConverter(state)
   return {
     selectedWalletId,
     wallet,
@@ -41,7 +43,8 @@ export const mapStateToProps = (state: State) => {
     fiatBalance,
     fiatSymbol,
     orderBookBids,
-    isConfirmFillDexOrderModalVisible
+    isConfirmFillDexOrderModalVisible,
+    currencyConverter
   }
 }
 
